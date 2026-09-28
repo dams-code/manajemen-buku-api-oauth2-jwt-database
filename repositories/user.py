@@ -11,7 +11,7 @@ from helpers.helper_password_user import verify_password, get_password_hash
 
 # import secrets
 
-temp_token: dict[str, str] = {}
+# temp_token: dict[str, str] = {}
 
 data_user = [
     {
@@ -157,8 +157,8 @@ async def result_get_user_id(username: str)-> ResultUser[UserResponse]:
 
 
 async def result_logout(token: str) -> ResultUser[None]:
-    if token in temp_token:
-        del temp_token[token]
+    # if token in temp_token:
+    #     del temp_token[token]
 
     # cek_username_aktif  = verify_access_token(token, 3600)
     cek_username_aktif = verify_access_token(token)
