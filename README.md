@@ -41,7 +41,10 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
  - ✅ Perbaikan schemas/buku pada BaseModel menyesuaikan model buku
  - ✅ konfigurasi alembic untuk migrasi model buku
  - ✅ Membuat `declarative_base` yang digunakan pada model buku agar SQLAlchemy dapat secara otomatis memasukan model buku kedalam Base.metadata dan didaftarkan sebagai table. (Alembic menyimpan log setiap perubahan pada Buku(Base))
- - ⬜️ Migrasi data_user dari list menjadi table database
+ - ✅ Migrasi data_user dari list menjadi table database
+ - ✅ Normalisasi pada data_user, role dipisah, membuat `relasi one-to-many` antara role dan user
+ - ✅ Membuat seeder data untuk role
+ - ⬜️ Perbaikan repositories user
 
 ### Perbedaan schemas/buku dari list dan sesudah migrasi ke database.
 ---
