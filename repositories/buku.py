@@ -202,9 +202,9 @@ async def result_update_buku(id: int, buku: BukuUpdate, user_aktif: str, sesi_db
 
     data_buku = await sesi_db.execute(query)
 
-    result_data_buku = data_buku.scalars().first()
+    result_data_buku = data_buku.scalars().one_or_none()
 
-    if not result_data_buku:
+    if result_data_buku is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Buku id {id} tidak ditemukan"

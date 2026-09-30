@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os
 
 import jwt
-from jwt.exceptions import InvalidTokenError, PyJWTError, ExpiredSignatureError
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
 load_dotenv()
 

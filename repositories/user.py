@@ -1,3 +1,4 @@
+from schemas.user import ResultUser
 from schemas.user import UserResponse
 from datetime import timedelta
 from helpers.security import *
@@ -12,7 +13,7 @@ from helpers.helper_password_user import verify_password, get_password_hash
 
 from models.user import User as Model_User
 from models.roles import *
-from sqlalchemy import select, or_
+from sqlalchemy import select, or_, func
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_database
@@ -39,7 +40,7 @@ from core.database import get_database
 
 async def result_login(form_data: OAuth2PasswordRequestForm, sesi_db: AsyncSession = Depends(get_database)) -> ResultUser[UserResponse]:
     
-    query = select(Model_User).where(Model_User.username.lower() == form_data.username.lower())
+    query = select(Model_User).where(func.lower(Model_User.username) == form_data.username.lower())
 
     result = await sesi_db.execute(query)
 
@@ -65,7 +66,7 @@ async def result_login(form_data: OAuth2PasswordRequestForm, sesi_db: AsyncSessi
 
     user_aktif = UserInDB.model_validate(result_data_user)
 
-    if not verify_password(form_data.password, user_aktif.hash_password):
+    if not verify_password(form_data.password, user_aktif.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Password yang dimasukkan salah",
@@ -117,7 +118,7 @@ async def result_get_user(id: int | None, username: str | None, sesi_db: AsyncSe
         conditions.append(Model_User.username.ilike(f"%{username}%"))
 
     if conditions:
-        query = query.options(selectinload(Model_User.roles_ref)).where(or_(*conditions))
+        query = query.options(selectinload(Model_User.role_ref)).where(or_(*conditions))
 
     result = await sesi_db.execute(query)
     
@@ -173,7 +174,7 @@ async def result_get_user_aktif(token: str, sesi_db: AsyncSession = Depends(get_
     # cek_username_aktif = verify_access_token(token, 3600)
     cek_username_aktif = verify_access_token(token)
 
-    query = select(Model_User).options(selectinload(Model_User.roles_ref)).where(Model_User.username.lower() == cek_username_aktif.username.lower())
+    query = select(Model_User).options(selectinload(Model_User.role_ref)).where(func.lower(Model_User.username) == cek_username_aktif.username.lower())
 
     result = await sesi_db.execute(query)
 
@@ -197,7 +198,7 @@ async def result_get_user_aktif(token: str, sesi_db: AsyncSession = Depends(get_
 
 async def result_get_user_id(username: str, sesi_db: AsyncSession = Depends(get_database))-> ResultUser[UserResponse]:
     
-    query = select(Model_User).where(Model_User.username.lower() == username.lower())
+    query = select(Model_User).where(func.lower(Model_User.username) == username.lower())
 
     result = await sesi_db.execute(query)
 
@@ -231,18 +232,18 @@ async def result_logout(token: str) -> ResultUser[None]:
         pesan=f"Anda sudah logout"
     )
 
-async def result_registrasi(registrasi_user: UserCreate, sesi_db: AsyncSession = Depends(get_database)) :
+async def result_registrasi(registrasi_user: UserCreate, sesi_db: AsyncSession = Depends(get_database)) -> ResultUser[UserResponse]:
 
     # cek_user = next((user for user in data_user if user["username"].lower() == registrasi_user.username.lower()), None)
 
-    query = select(Model_User).where(Model_User.username.lower() == registrasi_user.username.lower())
+    query = select(Model_User).where(func.lower(Model_User.username) == registrasi_user.username.lower())
 
     result = await sesi_db.execute(query)
 
-    cek_user = result.scalars().one_or_none()
+    data_user = result.scalars().one_or_none()
 
     # if cek_user is not None:
-    if cek_user is not None:
+    if data_user is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User sudah terdaftar disistem"
@@ -269,11 +270,12 @@ async def result_registrasi(registrasi_user: UserCreate, sesi_db: AsyncSession =
     get_data_user.pop("password", None)
 
     # get_data_user["id"] = id_user
-    get_data_user["hash_password"] = Hash_password_user
+    get_data_user["hashed_password"] = Hash_password_user
 
     result_registrasi_user = Model_User(
         **get_data_user,
-        create_at = datetime.now()
+        created_at = datetime.now(),
+        created_by = registrasi_user.username
     )
 
     sesi_db.add(result_registrasi_user)
@@ -283,15 +285,13 @@ async def result_registrasi(registrasi_user: UserCreate, sesi_db: AsyncSession =
 
     # data_user.append(get_data_user)
     # response_data_user = get_data_user.copy()
-    response_data_user = get_data_user.copy()
     # response_data_user.pop("hash_password", None)
-    response_data_user.pop("hash_password", None)
 
-    return {
-        "status": status.HTTP_200_OK,
-        "pesan": "Registrasi / Pendaftaran User Berhasil",
-        "data": response_data_user
-    }
+    return ResultUser[UserResponse](
+        status= status.HTTP_200_OK,
+        pesan= "Registrasi / Pendaftaran User Berhasil",
+        data_user= UserResponse.model_validate(result_registrasi_user)
+    )
 
 async def result_update_user_aktif(username: str, update_user: UserUpdate, token: str | None=None, sesi_db: AsyncSession = Depends(get_database))-> ResultUser[None]:
 
@@ -312,7 +312,7 @@ async def result_update_user_aktif(username: str, update_user: UserUpdate, token
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    query = select(Model_User).where(Model_User.username.lower() == cek_username_aktif.username.lower())
+    query = select(Model_User).where(func.lower(Model_User.username) == cek_username_aktif.username.lower())
 
     result = await sesi_db.execute(query)
 
@@ -344,13 +344,15 @@ async def result_update_user_aktif(username: str, update_user: UserUpdate, token
             pesan=f"Update data user {username} berhasil"
         )
 
-async def result_update_user(username: str, update_user: UserUpdate)-> ResultUser[None]:
+async def result_update_user(username: str, update_user: UserUpdate, username_aktif: str, sesi_db: AsyncSession = Depends(get_database))-> ResultUser[None]:
 
-    query = select(Model_User)
+    query = select(Model_User).where(func.lower(Model_User.username) == username.lower())
 
+    result = await sesi_db.execute(query)
 
+    user = result.scalar_one_or_none()
 
-    user = next((user for user in data_user if user["username"].lower() == username.lower()), None)
+    # user = next((user for user in data_user if user["username"].lower() == username.lower()), None)
 
     if user is None:
         raise HTTPException(
@@ -360,14 +362,21 @@ async def result_update_user(username: str, update_user: UserUpdate)-> ResultUse
 
     data_update_user =update_user.model_dump(exclude_unset=True)
 
-    user.update(data_update_user)
+    for key, item in data_update_user.items():
+        setattr(user, key, item)
+
+    user.modify_at = datetime.now()
+    user.modify_by = username_aktif
+
+    await sesi_db.commit()
+    await sesi_db.refresh(user)
 
     return ResultUser[None](
         status=status.HTTP_200_OK,
         pesan=f"Update data user {username} berhasil"
     )
 
-async def result_update_password_user(username: str, data_password: UpdatePasswordUser, token: str | None=None) -> ResultUser[None]:
+async def result_update_password_user(username: str, data_password: UpdatePasswordUser, token: str | None=None, sesi_db: AsyncSession = Depends(get_database)) -> ResultUser[None]:
 
     if token is None:
         raise HTTPException(
@@ -386,49 +395,80 @@ async def result_update_password_user(username: str, data_password: UpdatePasswo
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    user = next((user for user in data_user if user["username"].lower() == cek_username_aktif.username.lower()), None)
+    # user = next((user for user in data_user if user["username"].lower() == cek_username_aktif.username.lower()), None)
 
-    if user is None:
+    # if user is None:
+    #     raise HTTPException(
+    #         status_code = status.HTTP_404_NOT_FOUND,
+    #         detail=f"Username {username} tidak ditemukan"
+    #     )
+
+    query = select(Model_User).where(func.lower(Model_User.username) == username.lower())
+
+    result = await sesi_db.execute(query)
+
+    Data_username = result.scalar_one_or_none()
+
+    if Data_username is None:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
-            detail=f"Username {username} tidak ditemukan"
+            detail=f"Data Username {username} tidak ditemukan"
         )
 
-    if not verify_password(data_password.passwordLama, user["hash_password"]):
+    if not verify_password(data_password.passwordLama, Data_username.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Password yang diinput tidak sesuai dengan password lama"
         )
 
-    password_baru = get_password_hash(data_password.passwordBaru)
+    Data_username.hashed_password = get_password_hash(data_password.passwordBaru)
+    Data_username.modify_at = datetime.now()
+    Data_username.modify_by = cek_username_aktif.username
 
-    user["hash_password"] = password_baru
+    await sesi_db.commit()
 
     return ResultUser[None](
         status=status.HTTP_200_OK,
         pesan=f"Password {username} berhasil ter-update"
     )
 
-async def result_delete_user(username: str, token: str | None=None)-> ResultUser[None]:
+async def result_delete_user(username: str, token: str | None=None, sesi_db: AsyncSession = Depends(get_database))-> ResultUser[None]:
+
+    if token is None:
+        raise HTTPException(
+            status_code = status.HTTP_401_UNAUTHORIZED,
+            detail="Token tidak ada / wajib disertakan",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
     # cek_username_aktif = verify_access_token(token, 3600)
     cek_username_aktif = verify_access_token(token)
 
-    if cek_username_aktif.username == username:
+    if cek_username_aktif.username.lower() == username.lower():
         raise HTTPException(
             status_code = status.HTTP_400_BAD_REQUEST,
             detail="User yang dihapus hanya boleh user yang tidak sedang login saat ini"
         )
 
-    cek_index_username = next((index for index, user in enumerate(data_user) if user["username"] == username), None)
+    query = select(Model_User).where(func.lower(Model_User.username) == username.lower())
 
-    if cek_index_username is None:
+    result = await sesi_db.execute(query)
+
+    data_username = result.scalar_one_or_none()
+
+    # cek_index_username = next((index for index, user in enumerate(data_user) if user["username"] == username), None)
+
+    if data_username is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Username {username} tidak ditemukan"
         )
 
-    del data_user[cek_index_username]
+    # del data_user[cek_index_username]
+
+    await sesi_db.delete(data_username)
+
+    await sesi_db.commit()
 
     return ResultUser[None](
         status=status.HTTP_200_OK,

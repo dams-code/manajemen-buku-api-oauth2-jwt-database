@@ -19,4 +19,4 @@ class User(Base):
     modify_by: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     
     role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
-    roles_ref = relationship("Role", back_populates="user_ref")
+    role_ref = relationship("Role", back_populates="user_ref", lazy="selectin")

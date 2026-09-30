@@ -44,7 +44,9 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
  - ✅ Migrasi data_user dari list menjadi table database
  - ✅ Normalisasi pada data_user, role dipisah, membuat `relasi one-to-many` antara role dan user
  - ✅ Membuat seeder data untuk role
- - ⬜️ Perbaikan repositories user
+ - ✅ Perbaikan repositories user
+ - ✅ Perbaikan schemas dan model user.
+ - ⬜️ Perbaikan redirect 403 dan dependencies pada role user
 
 ### Perbedaan schemas/buku dari list dan sesudah migrasi ke database.
 ---
@@ -143,6 +145,146 @@ class Buku(Base):
     modify_by: Mapped[Optional[str | None]] = mapped_column(String(50), nullable=True)
 
 ```
+
+### Perbedaan schemas/user dari list dan sesudah migrasi ke database.
+
+<table>
+<tr>
+<th width="50%"><b>Schemas/user (List)</b></th>
+<th width="50%"><b>Schemas/user (Hasil Migrasi)</b></th>
+</tr>
+<tr>
+<td valign="top">
+
+```python
+class UserBase(BaseModel):
+    username: str
+    nama: str
+    role: str
+    
+class User(UserBase):
+    password: str
+    
+class UserInDB(UserBase):
+    hash_password: str
+
+class UserResponse(UserBase):
+    id: int
+
+class UserUpdate(BaseModel):
+    id: int
+    nama: Optional[str] = None
+    role: Optional[str] = None 
+
+class UpdatePasswordUser(BaseModel):
+    passwordLama: str
+    passwordBaru: str
+
+class ResultUser(BaseModel, Generic[T]):
+    status: int
+    pesan: str
+    data_user: Optional[T] = None
+    data_token: Optional[TokenSession] = None
+```
+</td>
+<td valign="top">
+
+```python
+class UserBase(BaseModel):
+    username: str
+    nama: str
+    # role: str
+    role_id: int
+    created_at: datetime
+    created_by: str
+    modify_at: datetime | None
+    modify_by: str | None
+
+    model_config = ConfigDict(from_attributes=True)
+    
+class User(UserBase):
+    password: str
+    
+class UserInDB(UserBase):
+    hashed_password: str
+
+class UserResponse(UserBase):
+    id: int
+    role_ref: RoleResponse
+
+    model_config = ConfigDict(from_attributes=True)
+
+class UserCreate(BaseModel):
+    username: str
+    nama: str
+    # role: str
+    password: str
+    role_id: int
+
+class UserUpdate(BaseModel):
+    # id: int
+    nama: Optional[str] = None
+    # role: Optional[str] = None
+    role_id: Optional[int] = None
+
+class UpdatePasswordUser(BaseModel):
+    passwordLama: str
+    passwordBaru: str
+
+class ResultUser(BaseModel, Generic[T]):
+    status: int
+    pesan: str
+    data_user: Optional[T] = None
+    data_token: Optional[TokenSession] = None
+```
+</td>
+</tr>
+</table>
+
+### Model User dan Model Role
+
+Pada model user dan role, saya set one-to-many, 1 role bisa di isi oleh banyak user, dari sisi user hanya dapat punya 1 role.
+
+<table>
+<tr>
+<th width="50%"><b>models/user</b></th>
+<th width="50%"><b>models/roles</b></th>
+</tr>
+<tr>
+<td valign="top">
+
+```python
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String(50), index=True, unique=True)
+    nama: Mapped[str] = mapped_column(String(255))
+    # role: Mapped[str] = mapped_column(String(10))
+    hashed_password: Mapped[str] = mapped_column(String(255))
+    created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
+    created_by: Mapped[str] = mapped_column(String(50), default='system')
+    modify_at: Mapped[Optional[DateTime]] = mapped_column(DateTime, onupdate=func.now(), nullable=True)
+    modify_by: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id"))
+    role_ref = relationship("Role", back_populates="user_ref", lazy="selectin")
+```
+</td>
+<td valign="top">
+
+```python
+class Role(Base):
+    __tablename__ = "roles"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    roledesc: Mapped[str] = mapped_column(String(10))
+
+    user_ref: Mapped[list["User"]] = relationship("User", back_populates="role_ref")
+```
+</td>
+</tr>
+</table>
 
 ### Konfigurasi Alembic (env.py)  [Kode](alembic/env.py)
 

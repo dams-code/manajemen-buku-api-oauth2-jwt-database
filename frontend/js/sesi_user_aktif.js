@@ -9,9 +9,13 @@
 
     if (hasil){
         console.log(hasil.data_user);
+        const roleName = hasil.data_user?.role_ref?.roledesc;
+
+        console.log(roleName)
 
         userAktif.textContent = hasil.data_user.username;
-        userRoleAktif.textContent = hasil.data_user.role;
+        userRoleAktif.textContent = hasil.data_user.role_ref.roledesc;
+        
     }
 
 })();

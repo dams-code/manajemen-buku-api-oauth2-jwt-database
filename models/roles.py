@@ -9,5 +9,5 @@ class Role(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     roledesc: Mapped[str] = mapped_column(String(10))
 
-    user_ref: Mapped[list["User"]] = relationship("User", back_populates="roles_ref")
+    user_ref: Mapped[list["User"]] = relationship("User", back_populates="role_ref")
     

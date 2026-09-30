@@ -24,7 +24,7 @@ async function getUserID() {
 
         username.value = result.data_user.username;
         nama.value = result.data_user.nama;
-        list_role.value = result.data_user.role;
+        list_role.value = result.data_user.role_id;
 
         return result;
 
@@ -53,7 +53,7 @@ async function updateUser(e){
 
         const update_data_user = {
             nama: nama.value,
-            role: list_role.value
+            role_id: list_role.value
         }
 
         // console.log(username.value);

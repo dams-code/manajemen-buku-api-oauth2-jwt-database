@@ -14,7 +14,7 @@ async function getUser(){
         
         htmlKosong = `
             <tr>
-                <td colspan="5" class="text-center">Belum ada data buku. Silakan tambah buku baru.</td>
+                <td colspan="5" class="text-center">Belum ada data user. Silakan tambah user baru.</td>
             </tr>
         `
 
@@ -26,9 +26,10 @@ async function getUser(){
             const user = await cek_auth_token("/user/aktif");
             const hasil_user = await user.json();
 
-            // console.log(hasil_user);
+            // const cekManajer = hasil_user.data_user.role === "manajer";
+            const cekManajer = hasil_user.data_user.role_ref.roledesc === "manajer";
 
-            const cekManajer = hasil_user.data_user.role === "manajer";
+            // console.log(hasil_user.data_user.role_ref.roledesc)
 
             if (cekManajer){
                 const htmlRows = listUser.data_user.map((user) => `
@@ -36,7 +37,7 @@ async function getUser(){
                         <td class="align-middle">${user.id}</td>
                         <td class="align-middle">${user.username}</td>
                         <td class="align-middle">${user.nama}</td>
-                        <td class="align-middle">${user.role}</td>
+                        <td class="align-middle">${user.role_ref.roledesc}</td>
                         ${cekManajer ? `
                             <td class="d-flex gap-3 justify-content-center">
                                 <button class="btn btn-primary d-flex col-gap-3" type="button" data-bs-toggle="modal" data-bs-target="#modaluser" data-username=${user.username} data-id=${user.id} onclick="getDataUserID(this);"><i class="bi bi-pencil"></i> Update</button>
@@ -93,6 +94,12 @@ async function getUser(){
 
 getUser();
 
+function cekFormatUsername(username){
+    const setRegex = /^[a-zA-Z0-9_-]+$/;
+
+    return setRegex.test(username);
+}
+
 
 async function simpan_user(){
 
@@ -117,14 +124,14 @@ async function simpan_user(){
         const dataUserUpdate = {
             id: cek_id_username,
             nama: nama.value,
-            role: list_role.value
+            role_id: list_role.value
         }
 
         const dataUserCreate = {
             "username": username.value,
             "nama": nama.value,
             "password": password.value,
-            "role": list_role.value,
+            "role_id": list_role.value,
         }
 
         // console.log(cek_id_username ? JSON.stringify(dataUserUpdate) : JSON.stringify(dataUserCreate));
@@ -136,7 +143,19 @@ async function simpan_user(){
 
         if(!response) return;
 
+        if(method === "POST" && !cekFormatUsername(username.value)){
+
+            Swal.fire({
+                icon: "error",
+                title: "Gagal Tambah User",
+                text: "Username tidak boleh mengandung spasi atau karakter spesial seperti ' atau \""
+            });
+
+            return;
+        }
+
         if(response.ok){
+
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
@@ -207,7 +226,7 @@ async function getDataUserID(data){
         try{
             const data_user = await cek_auth_token(`/user/${getUsername}`)
 
-            if(!data_user) return;
+            username.disabled = true;
 
             if(!data_user.ok){
                 Swal.fire({
@@ -224,12 +243,12 @@ async function getDataUserID(data){
             idUser.value = result.data_user.id;
             username.value = getUsername;
             nama.value = result.data_user.nama;
-            list_role.value = result.data_user.role;
+            list_role.value = result.data_user.role_ref.id, 10;
 
             return result;
 
         } catch(error){
-            console.error("Gagal mengambil data user : ", error);
+            console.error("Gagal mengambil data user : ", error.messsage);
 
             Swal.fire({
                 icon:"error",
@@ -269,7 +288,7 @@ async function hapusUser(data){
                     icon: 'success',
                     title: 'Terhapus',
                     text: `Data User ${getUsername} berhasil terhapus`,
-                    timer: 1500,
+                    timer: 1100,
                     showConfirmButton: false
                 });
 
