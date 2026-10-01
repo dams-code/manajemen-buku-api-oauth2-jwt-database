@@ -383,7 +383,7 @@ HOST_DB='...'
 
 ## Cara Exekusi / menjalankan program
 
-**Install uv (jika belum ada) (install secara global)
+*) Install uv (jika belum ada) (install secara global)
 
 ```bash
 pip install uv
