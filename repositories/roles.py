@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_database
 from models.roles import Role
 from models.user import User as Model_User
+from enum import Enum
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
@@ -17,6 +18,8 @@ async def get_role_user(token: Annotated[str, Depends(oauth_scheme)], sesi_db: A
     
     # cek_username_aktif = verify_access_token(token,3600)
     cek_username_aktif = verify_access_token(token)
+
+    print("cek_username_aktif", cek_username_aktif)
 
     if not cek_username_aktif.username:
         raise HTTPException(
@@ -54,7 +57,20 @@ class CekRole:
 
         user_role = user_role.data_user
 
-        if not user_role or not user_role.role_ref:
+        print("user_role", user_role)
+
+        # if not user_role or not user_role.role_ref:
+
+        #     raise HTTPException(
+        #         status_code = status.HTTP_401_UNAUTHORIZED,
+        #         detail=f"Akses ditolak, Data user atau role tidak ditemukan"
+        #     )
+
+        user_roledesc = user_role.role_ref.roledesc
+
+        list_role = [r.value if isinstance(r, Enum) else str(r) for r in self.roles]
+
+        if user_roledesc not in list_role:
 
             raise HTTPException(
                 status_code = status.HTTP_403_FORBIDDEN,

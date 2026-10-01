@@ -70,12 +70,19 @@ async function gantiPasswordUser(e){
             });
         } else {
             const errorDetail = await response_update_password.json();
+            
+            console.log(response_update_password);
+            console.log(errorDetail);
 
-            Swal.fire({
-                icon: "error",
-                title: "Update Password Gagal",
-                text: `${errorDetail} | Terjadi error saat update password user ${username}`
-            });
+            if (errorDetail.pesan){
+                Swal.fire({
+                    icon: "error",
+                    title: "Update Password Gagal",
+                    text: `${errorDetail.pesan} | Terjadi error saat update password user ${username.value}`
+                });
+            }
+
+            
             return;
         }
     } catch(error){

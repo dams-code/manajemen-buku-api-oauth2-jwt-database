@@ -6,6 +6,8 @@ async function getUser(){
 
     if (!getUser) return;
 
+    console.log(getUser);
+
     const tbody = document.getElementById("dataUser");
 
     listUser = await getUser.json();
@@ -29,12 +31,12 @@ async function getUser(){
             // const cekManajer = hasil_user.data_user.role === "manajer";
             const cekManajer = hasil_user.data_user.role_ref.roledesc === "manajer";
 
-            // console.log(hasil_user.data_user.role_ref.roledesc)
+            console.log(hasil_user.data_user.role_ref.roledesc)
 
             if (cekManajer){
-                const htmlRows = listUser.data_user.map((user) => `
+                const htmlRows = listUser.data_user.map((user, index) => `
                     <tr>
-                        <td class="align-middle">${user.id}</td>
+                        <td class="align-middle">${index + 1}</td>
                         <td class="align-middle">${user.username}</td>
                         <td class="align-middle">${user.nama}</td>
                         <td class="align-middle">${user.role_ref.roledesc}</td>
@@ -109,17 +111,28 @@ async function simpan_user(){
 
         const cek_id_username = idUser ? parseInt(idUser, 10) :  null;
         
-        const username = document.getElementById("username");
+        const username = document.getElementById("username").value.trim();
         const nama = document.getElementById("nama");
         const list_role = document.getElementById("list_role");
         const password = document.getElementById("password");
 
-        const url = cek_id_username ? `/user/update/${username.value}` : "/user";
+        const url = cek_id_username ? `/user/update/${username}` : "/user";
         const method = cek_id_username ? "PUT" : "POST";
 
         // console.log("id user",document.getElementById("idUser"));
         // console.log(url);
         // console.log(method);
+
+        if(!cekFormatUsername(username)){
+
+            Swal.fire({
+                icon: "error",
+                title: "Gagal Tambah User",
+                text: "Username tidak boleh mengandung spasi atau karakter spesial seperti ' atau \""
+            });
+
+            return;
+        }
 
         const dataUserUpdate = {
             id: cek_id_username,
@@ -128,7 +141,7 @@ async function simpan_user(){
         }
 
         const dataUserCreate = {
-            "username": username.value,
+            "username": username,
             "nama": nama.value,
             "password": password.value,
             "role_id": list_role.value,
@@ -143,23 +156,12 @@ async function simpan_user(){
 
         if(!response) return;
 
-        if(method === "POST" && !cekFormatUsername(username.value)){
-
-            Swal.fire({
-                icon: "error",
-                title: "Gagal Tambah User",
-                text: "Username tidak boleh mengandung spasi atau karakter spesial seperti ' atau \""
-            });
-
-            return;
-        }
-
         if(response.ok){
 
             await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
-                text: cek_id_username ? `Data User ${username.value} berhasil di perbaharui` : "Registrasi / Pendaftaran User Berhasil",
+                text: cek_id_username ? `Data User ${username} berhasil di perbaharui` : "Registrasi / Pendaftaran User Berhasil",
                 timer: 1500,
                 showConfirmButton: false
             });

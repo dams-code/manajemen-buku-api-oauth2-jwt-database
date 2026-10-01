@@ -1,4 +1,5 @@
 # from schemas.buku import BukuBase, Buku, ResultBuku
+from schemas.user import UserBase
 from datetime import datetime
 from core.database import get_database
 from schemas.buku import *
@@ -141,6 +142,19 @@ async def result_add_buku(buku: BukuCreate, user_aktif: str, sesi_db: AsyncSessi
 
     # username_aktif = verify_access_token(token, 3600)
 
+    query = select(Buku).where(Buku.judul == buku.judul)
+
+    result = await sesi_db.execute(query)
+
+    cek_data_buku = result.scalar_one_or_none()
+
+    if cek_data_buku:
+        raise HTTPException(
+            status_code = status.HTTP_400_BAD_REQUEST,
+            detail=f"Buku berjudul '{buku.judul}' sudah ada disistem"
+        )
+
+
     data_buku = buku.model_dump(exclude_unset=True)
 
     result_data_buku = Buku(
@@ -216,7 +230,7 @@ async def result_update_buku(id: int, buku: BukuUpdate, user_aktif: str, sesi_db
         setattr(result_data_buku, key, item)
 
     result_data_buku.modify_at = datetime.now()
-    result_data_buku.modify_by = user_aktif.username
+    result_data_buku.modify_by = user_aktif
 
     await sesi_db.commit()
     await sesi_db.refresh(result_data_buku)
@@ -285,7 +299,7 @@ async def result_update_status_buku(id: int, tersedia: bool, user_aktif: str, se
 
     query = (
         update(Buku).where(Buku.id == id)
-        .values(tersedia=tersedia, modify_at=datetime.now(), modify_by=user_aktif.username)
+        .values(tersedia=tersedia, modify_at=datetime.now(), modify_by=user_aktif)
         .returning(Buku)
     )
 

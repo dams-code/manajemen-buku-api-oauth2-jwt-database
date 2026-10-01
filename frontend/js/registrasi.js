@@ -1,5 +1,5 @@
 
-const username = document.getElementById("username");
+const username = document.getElementById("username").value.trim();
 
 const nama = document.getElementById("nama");
 const role = document.getElementById("list_role");
@@ -18,14 +18,14 @@ async function registrasiUser(e){
         e.stopPropagation();
     }
 
-    if(!cekFormatUsername(username.value)) {
+    if(!cekFormatUsername(username)) {
         Swal.fire({
             icon: "error",
             title: "Gagal Registrasi",
             text: "Username tidak boleh mengandung spasi atau karakter spesial seperti ' atau \""
         });
 
-        console.log(cekFormatUsername(username.value))
+        console.log(cekFormatUsername(username))
 
         return;
     }
@@ -44,7 +44,7 @@ async function registrasiUser(e){
     }
 
     const formRegistrasiUser = {
-        "username": username.value,
+        "username": username,
         "nama": nama.value,
         "role_id": role.value,
         "password": conf_password.value,

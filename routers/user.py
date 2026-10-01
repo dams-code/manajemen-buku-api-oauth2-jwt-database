@@ -12,7 +12,7 @@ from core.database import get_database
 
 router_user = APIRouter(tags=["user"])
 
-@router_user.post("/login", response_model=ResultUser[UserBase])
+@router_user.post("/login", response_model=ResultUser[UserResponse])
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], sesi_db: AsyncSession = Depends(get_database)):
 
     return await result_login(form_data=form_data, sesi_db=sesi_db)

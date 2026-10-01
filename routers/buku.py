@@ -30,14 +30,14 @@ async def get_buku_id(id: Annotated[int, Path(description="Cari Id Buku", gt=0)]
 @router_buku.post("", response_model=ResultBuku[BukuBase], status_code=status.HTTP_201_CREATED)
 # @router_buku.post("", response_model=ResultBuku[BukuBase], status_code=status.HTTP_201_CREATED, dependencies=[Depends(CekRole([Roles.ADMIN]))])
 # async def add_buku(buku: Buku, token: Annotated[str, Depends(oauth2_scheme)] = None):
-async def add_buku(buku: BukuCreate ,user_aktif: UserBase = Depends(CekRole([Roles.ADMIN])), sesi_db: AsyncSession = Depends(get_database)):
+async def add_buku(buku: BukuCreate ,user_aktif: str = Depends(CekRole([Roles.ADMIN])), sesi_db: AsyncSession = Depends(get_database)):
     
-    return await result_add_buku(buku=buku, user_aktif=user_aktif.username, sesi_db=sesi_db)
+    return await result_add_buku(buku=buku, user_aktif=user_aktif, sesi_db=sesi_db)
 
 @router_buku.put("/{id}", response_model=ResultBuku[BukuBase])
 # @router_buku.put("/{id}", response_model=ResultBuku[BukuBase], dependencies=[Depends(CekRole([Roles.ADMIN]))])
 # async def update_buku(id: Annotated[int, Path(description="Update Id Buku", gt=0)], buku: Buku, token: Annotated[str, Depends(oauth2_scheme)] = None):
-async def update_buku(id: Annotated[int, Path(description="Update Id Buku", gt=0)], buku: BukuUpdate, user_aktif: UserBase = Depends(CekRole([Roles.ADMIN])), sesi_db: AsyncSession = Depends(get_database)):
+async def update_buku(id: Annotated[int, Path(description="Update Id Buku", gt=0)], buku: BukuUpdate, user_aktif: str = Depends(CekRole([Roles.ADMIN])), sesi_db: AsyncSession = Depends(get_database)):
     
     return await result_update_buku(id, buku, user_aktif, sesi_db)
 
@@ -50,6 +50,6 @@ async def delete_buku(id: Annotated[int, Path(description="Hapus Id Buku", gt=0)
 @router_buku.patch("/{id}", response_model=ResultBuku[BukuBase])
 # @router_buku.patch("/{id}", response_model=ResultBuku[BukuBase], dependencies=[Depends(CekRole([Roles.ADMIN]))])
 # async def update_status_buku(id: Annotated[int, Path(description="Update Status Buku", gt=0)], tersedia: Annotated[bool, Query(description="Ketersedian buku (true/false)")], token: Annotated[str, Depends(oauth2_scheme)] = None):
-async def update_status_buku(id: Annotated[int, Path(description="Update Status Buku", gt=0)], tersedia: Annotated[bool, Query(description="Ketersedian buku (true/false)")], user_aktif: UserBase = Depends(CekRole([Roles.ADMIN])) ,sesi_db: AsyncSession = Depends(get_database)):
+async def update_status_buku(id: Annotated[int, Path(description="Update Status Buku", gt=0)], tersedia: Annotated[bool, Query(description="Ketersedian buku (true/false)")], user_aktif: str = Depends(CekRole([Roles.ADMIN])) ,sesi_db: AsyncSession = Depends(get_database)):
     
     return await result_update_status_buku(id=id, tersedia=tersedia, user_aktif=user_aktif, sesi_db=sesi_db)

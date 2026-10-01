@@ -46,7 +46,7 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
  - ✅ Membuat seeder data untuk role
  - ✅ Perbaikan repositories user
  - ✅ Perbaikan schemas dan model user.
- - ⬜️ Perbaikan redirect 403 dan dependencies pada role user
+ - ✅ Perbaikan redirect 403 dan dependencies pada role user
 
 ### Perbedaan schemas/buku dari list dan sesudah migrasi ke database.
 ---
@@ -381,19 +381,83 @@ DATABASE_DB='...'
 HOST_DB='...'
 ```
 
-### `Update` instalasi library yang diperlukan
----
+## Cara Exekusi / menjalankan program
 
-Masuk ke folder project, buat .venv dulu + aktifkan .venv, setelah itu
+**Install uv (jika belum ada) (install secara global)
 
-Copy paste kode dibawah ini di terminal.
+```bash
+pip install uv
+```
+
+1. Clone project
+
+```bash
+    git clone https://github.com/dams-code/manajemen-buku-api-oauth2-jwt-database.git
+```
+
+2. Masuk ke folder project
+
+```bash
+cd manajemen-buku-api-oauth2-jwt-database
+```
+
+3. Buat virtual environment
+
+```bash
+python -m venv <nama_virtual_environment>
+```
+
+4. Aktifkan virtual environment
+
+ - `Linux`
+```bash
+source <nama_virtual_environment>/bin/activate
+```
+
+ - `Windows`
+```bash
+Scripts\activate
+```
+
+5. Install Library
 
 ```bash
 pip install "fastapi[standard]" "pwdlib[argon2]" python-dotenv
-
-pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
-
 ```
+
+```bash
+pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
+```
+
+6. migrasi model ke database dengan alembic
+
+```bash
+alembic upgrade head
+``
+
+7. Jalankan seeder (karena pada role ini saya set hanya ada admin dan manajer saja.)
+
+```bash
+python -m core.seed_data
+```
+
+8. Dokumentasi dan mount html
+
+```bash
+uv run fastapi dev
+```
+
+> **Link Dokumentasi**
+
+```bash
+http://127.0.0.1:8000/docs
+```
+> **Link Mount html**
+
+```bash
+http://127.0.0.1:8000/
+```
+
 
 ### Dokumentasi
 ---
@@ -403,6 +467,7 @@ pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
 | <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-2.png" width="100%" style="object-fit: cover;"> |
 
 <br/>
+
 
 ## Tech Stack
 

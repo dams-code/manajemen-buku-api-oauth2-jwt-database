@@ -35,7 +35,11 @@ async function getBuku(){
 
             const user = await cek_auth_token(`/user/aktif`);
             const hasil_user = await user.json();
-            const cekManajer = hasil_user.data_user.role === "manajer";
+            const cekManajer = hasil_user.data_user.role_ref.roledesc === "manajer";
+
+            console.log(cekManajer);
+
+            console.log(hasil_user.data_user.role_ref.roledesc);
 
             const htmlRows = hasil.data.map(item => `
                 <tr>
@@ -249,11 +253,12 @@ async function simpan_buku(){
             await getBuku();
         } else {
             const errorDetail = await response.json();
-            console.error(errorDetail.detail)
+            // console.error(errorDetail);
+
             Swal.fire({
                 icon: "error",
                 title: "Gagal",
-                text: `${errorDetail.detail} | Gagal ${method} pada buku terjadi error.`
+                text: `${errorDetail.pesan} | Gagal ${method} pada buku terjadi error.`
             });
         }
     } catch(error){

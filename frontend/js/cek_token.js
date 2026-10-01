@@ -33,7 +33,7 @@ async function cek_auth_token(url, options={}){
 
         if (response.status === 403){
             const result = await response.json();
-            const pesanError = result.detail || result.pesan || "Akses halaman ditolak";
+            // const pesanError = result.detail || result.pesan || "Akses halaman ditolak";
             
             // console.error(`Error (${response.status}):`, pesanError);
 
@@ -48,7 +48,7 @@ async function cek_auth_token(url, options={}){
             await Swal.fire({
                 icon: "warning",
                 title: "Sesi login berakhir",
-                text: "Sesi login anda habis, Silahkan login kembali",
+                text:"Sesi login anda habis, Silahkan login kembali",
                 confirmButtonText: 'OK',
                 allowOutsideClick: false
             });
