@@ -433,7 +433,7 @@ pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
 
 ```bash
 alembic upgrade head
-``
+```
 
 7. Jalankan seeder (karena pada role ini saya set hanya ada admin dan manajer saja.)
 
