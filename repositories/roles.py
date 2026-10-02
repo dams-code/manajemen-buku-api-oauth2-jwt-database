@@ -77,6 +77,6 @@ class CekRole:
                 detail=f"Akses ditolak, Halaman ini dapat diakses user dengan role : {[r.value for r in self.roles]}"
             )
 
-        return user_role.role_ref.roledesc
+        return user_role.username
 
 

@@ -77,7 +77,7 @@ async def result_add_member(member: BuatMember, username_aktif: str, sesi_db: As
     )
 
     sesi_db.add(result_data_member)
-    
+
     await sesi_db.commit()
 
     await sesi_db.refresh(result_data_member)
@@ -88,5 +88,60 @@ async def result_add_member(member: BuatMember, username_aktif: str, sesi_db: As
         data=MemberBase.model_validate(result_data_member)
     )
 
+async def result_get_member_id(id: int, sesi_db: AsyncSession = Depends(get_database)) -> ResultMember[MemberBase]:
+
+    query = select(Member).where(Member.id == id)
+
+    result = await sesi_db.execute(query)
+
+    result_data_member = result.scalar_one_or_none()
+
+    if result_data_member is None:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail="Data member tidak ditemukan"
+        )
+
+    return ResultMember[MemberBase](
+        status=status.HTTP_200_OK,
+        pesan="Member ditemukan",
+        data = MemberBase.model_validate(result_data_member)
+    )
+
+async def result_update_member(id: int, member: UpdateMember, username_aktif: str, sesi_db: AsyncSession = Depends(get_database)):
+
+    query = select(Member).where(Member.id == id)
+
+    result = await sesi_db.execute(query)
+
+    result_data_member = result.scalar_one_or_none()
+
+    if result_data_member is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Member dengan id {id} tidak ditemukan"
+        )
+
+    data_member = member.model_dump(exclude_unset=True)
+
+    for key, item in data_member.items():
+        setattr(result_data_member, key, item)
+
+    result_data_member.modify_at = datetime.now()
+    result_data_member.modify_by = username_aktif
+
+    await sesi_db.commit()
+    await sesi_db.refresh(result_data_member)
+
+    return ResultMember[MemberBase](
+        status=status.HTTP_200_OK,
+        pesan=f"Member dengan id {id} berhasil diupdate",
+        data=MemberBase.model_validate(result_data_member)
+    )
+
+
+
+
+    
 
     
