@@ -11,11 +11,12 @@ async function getBuku(){
 
     // console.log(hasil)
 
-    if (!hasil.data || hasil.data.length === 0){
-        const user = await cek_auth_token(`/user/aktif`);
-        const hasil_user = await user.json();
-        const cekManajer = hasil_user.data_user.role === "manajer";
+    const user = await cek_auth_token(`/user/aktif`);
+    const hasil_user = await user.json();
+    const cekManajer = hasil_user.data_user.role === "manajer";
 
+    if (!hasil.data || hasil.data.length === 0){
+        
         const btnTambahBuku = document.getElementById("btnTambahBuku");
             
         if (cekManajer){
@@ -30,20 +31,17 @@ async function getBuku(){
             </tr>
         `
         tbody.innerHTML = htmlRowsKosong
+
+        return;
     } else {
         try{
-
-            const user = await cek_auth_token(`/user/aktif`);
-            const hasil_user = await user.json();
-            const cekManajer = hasil_user.data_user.role_ref.roledesc === "manajer";
-
-            console.log(cekManajer);
+            // console.log(cekManajer);
 
             console.log(hasil_user.data_user.role_ref.roledesc);
 
-            const htmlRows = hasil.data.map(item => `
+            const htmlRows = hasil.data.map((item, index) => `
                 <tr>
-                    <td class="align-middle">${item.id}</td>
+                    <td class="align-middle">${index + 1}</td>
                     <td class="align-middle text-start">${item.judul}</td>
                     <td class="align-middle text-start">${item.penulis}</td>
                     <td class="align-middle">${item.tahun}</td>
