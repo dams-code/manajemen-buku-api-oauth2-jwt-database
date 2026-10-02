@@ -8,6 +8,7 @@ class MemberBase(BaseModel):
     nama: str
     alamat: str
     no_telp: str
+    status: bool
     created_at: datetime
     created_by: str
     modify_at: datetime | None = None
@@ -20,6 +21,7 @@ class BuatMember(BaseModel):
     nama: str
     alamat: str
     no_telp: str
+    status: bool = True
 
     model_config = ConfigDict(from_attributes=True)
 

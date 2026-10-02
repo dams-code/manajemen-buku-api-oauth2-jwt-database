@@ -25,7 +25,7 @@ async def result_get_member(id: int | None, nama: str | None, sesi_db: AsyncSess
     result = await sesi_db.execute(query)
 
     if id is not None or nama is not None:
-        result_data_member = result.scalars_one_or_none()    
+        result_data_member = result.scalar_one_or_none()    
 
         if result_data_member is None:
             raise HTTPException(
@@ -108,7 +108,7 @@ async def result_get_member_id(id: int, sesi_db: AsyncSession = Depends(get_data
         data = MemberBase.model_validate(result_data_member)
     )
 
-async def result_update_member(id: int, member: UpdateMember, username_aktif: str, sesi_db: AsyncSession = Depends(get_database)):
+async def result_update_member(id: int, member: UpdateMember, username_aktif: str, sesi_db: AsyncSession = Depends(get_database)) -> ResultMember[MemberBase]:
 
     query = select(Member).where(Member.id == id)
 
@@ -139,9 +139,53 @@ async def result_update_member(id: int, member: UpdateMember, username_aktif: st
         data=MemberBase.model_validate(result_data_member)
     )
 
+async def result_delete_member(id: int, sesi_db: AsyncSession = Depends(get_database)) -> ResultMember[None]:
 
+    query = select(Member).where(Member.id == id)
 
+    result = await sesi_db.execute(query)
 
-    
+    result_data_member = result.scalar_one_or_none()
 
-    
+    if result_data_member is None:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail=f"Member id {id} tidak ditemukan"
+        )
+
+    await sesi_db.delete(result_data_member)
+
+    await sesi_db.commit()
+
+    return ResultMember[None](
+        status=status.HTTP_200_OK,
+        pesan=f"Member id {id} berhasil dihapus",
+        data=None
+    )
+
+async def result_update_status_member(id: int, status_member: bool, username_aktif: str, sesi_db: AsyncSession = Depends(get_database)) -> ResultMember[MemberBase]:
+
+    query = select(Member).where(Member.id == id)
+
+    result = await sesi_db.execute(query)
+
+    result_data_member = result.scalar_one_or_none()
+
+    if result_data_member is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Member dengan id {id} tidak ditemukan"
+        )
+
+    result_data_member.status = status_member
+    result_data_member.modify_at = datetime.now()
+    result_data_member.modify_by = username_aktif
+
+    await sesi_db.commit()
+    await sesi_db.refresh(result_data_member)
+
+    return ResultMember[MemberBase](
+        status=status.HTTP_200_OK,
+        pesan=f"Status member dengan id {id} berhasil diupdate",
+        data=MemberBase.model_validate(result_data_member)
+    )
