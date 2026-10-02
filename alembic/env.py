@@ -10,6 +10,7 @@ from core.database import DB_url, Base
 
 from models.user import User
 from models.buku import Buku
+from models.member import Member
 
 config = context.config
 

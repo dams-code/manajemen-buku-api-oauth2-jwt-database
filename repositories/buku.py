@@ -57,9 +57,9 @@ async def result_get_buku(id: int | None=None, judul: str | None=None, sesi_db: 
 
     result = await sesi_db.execute(query)
 
-    if id is not None:
-        result_data_buku = result.scalars().first()
-        if not result_data_buku:
+    if id is not None or judul is not None:
+        result_data_buku = result.scalars_one_or_none()    
+        if result_data_buku is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Buku id {id} tidak ditemukan"
@@ -89,6 +89,12 @@ async def result_get_buku(id: int | None=None, judul: str | None=None, sesi_db: 
     
     # list_buku = [BukuBase(**item) for item in data_buku]
     list_buku = result.scalars().all()
+
+    if list_buku is None or len(list_buku) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Data buku tidak ditemukan"
+        )
 
     return ResultBuku[list[BukuBase]](
         status=status.HTTP_200_OK,
