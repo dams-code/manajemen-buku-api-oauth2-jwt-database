@@ -14,6 +14,6 @@ class Member(Base):
     status: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
     created_by: Mapped[str] = mapped_column(String(50))
-    modify_at: Mapped[Optional[DateTime | None]] = mapped_column(DateTime, onupdate=func.now(), nullable=True)
-    modify_by: Mapped[Optional[str | None]] = mapped_column(String(50), nullable=True)
+    modify_at: Mapped[Optional[DateTime]] = mapped_column(DateTime, onupdate=func.now(), nullable=True)
+    modify_by: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     
