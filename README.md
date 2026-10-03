@@ -467,7 +467,8 @@ http://127.0.0.1:8000/
 
 | <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-1.png" width="100%" style="object-fit: cover;"> |
 | :---: |
-| <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-2.png" width="100%" style="object-fit: cover;"> |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-2-rev.png" width="100%" style="object-fit: cover;"> |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-3.png" width="100%" style="object-fit: cover;"> |
 
 <br/>
 
