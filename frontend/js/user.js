@@ -225,9 +225,12 @@ async function getDataUserID(data){
     document.getElementById("form-password").style.display = "none";
     
     if(getIdUsername){
-        try{
-            const data_user = await cek_auth_token(`/user/${getUsername}`)
 
+        const data_user = await cek_auth_token(`/user/${getUsername}`);
+
+        if(!data_user) return;
+
+        try{
             username.disabled = true;
 
             if(!data_user.ok){

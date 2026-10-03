@@ -13,13 +13,16 @@ async function getBuku(){
 
     const user = await cek_auth_token(`/user/aktif`);
     const hasil_user = await user.json();
-    const cekManajer = hasil_user.data_user.role === "manajer";
+
+    const cekManajer = hasil_user.data_user.role_ref.roledesc === "manajer";
+
+    const btnTambahBuku = document.getElementById("btnTambahBuku");
 
     if (!hasil.data || hasil.data.length === 0){
         
-        const btnTambahBuku = document.getElementById("btnTambahBuku");
-            
-        if (cekManajer){
+        console.log(hasil_user.data_user.role_ref.roledesc);
+
+        if (hasil_user.data_user.role === "manajer"){
             btnTambahBuku.style.display = "none";
         } else {
             btnTambahBuku.style.display = "inline-block";
@@ -34,10 +37,17 @@ async function getBuku(){
 
         return;
     } else {
+
+        if (cekManajer){
+            btnTambahBuku.style.display = "none";
+        } else {
+            btnTambahBuku.style.display = "inline-block";
+        }
+
         try{
             // console.log(cekManajer);
 
-            console.log(hasil_user.data_user.role_ref.roledesc);
+            // console.log(hasil_user.data_user.role_ref.roledesc);
 
             const htmlRows = hasil.data.map((item, index) => `
                 <tr>
@@ -86,14 +96,6 @@ async function getBuku(){
             
             // console.log(hasil_user)
 
-            const btnTambahBuku = document.getElementById("btnTambahBuku");
-            
-            if (cekManajer){
-                btnTambahBuku.style.display = "none";
-            } else {
-                btnTambahBuku.style.display = "inline-block";
-            }
-
             tbody.innerHTML = htmlRows
 
             Swal.fire({
@@ -136,12 +138,12 @@ async function getDataBukuID(data){
     const list_genre = document.getElementById("list_genre")
     const list_tersedia = document.getElementById("list_tersedia")
 
-
     if (id){
-        try{
-            const data_buku = await cek_auth_token(`/buku/${id}`);
+        const data_buku = await cek_auth_token(`/buku/${id}`);
 
-            if(!data_buku) return;
+        if(!data_buku) return;
+
+        try{
 
             // if (data_buku.status == 401) {
             //     localStorage.removeItem("access_token");

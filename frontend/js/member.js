@@ -12,7 +12,9 @@ async function getMember(){
     const user = await cek_auth_token("/user/aktif");
     const hasil_user = await user.json();
 
-    const admin = hasil_user.data_user.role_ref.roledesc === "admin";;
+    const admin = hasil_user.data_user.role_ref.roledesc === "admin";
+
+    const btnTambahMember = document.getElementById("btnTambahMember");
 
     if(!hasil.data || hasil.data.length === 0){
         
@@ -152,4 +154,37 @@ async function updateStatusMember(data){
     }finally{
         data.disabled = false;
     }
+}
+
+async function getDataMemberID(data){
+
+    const id = data.dataset.id;
+
+    const idMember = document.getElementById("id");
+    const namaMember = document.getElementById("nama");
+    const alamatMember = document.getElementById("alamat");
+    const noTelpMember = document.getElementById("notelp");
+
+    if(id){
+        const response = await cek_auth_token(`/member/${id}`);
+
+        if(!response) return;
+
+        try{
+            result = await response.json();
+
+            if(result.ok){
+
+            }
+
+        } catch(error){
+            console.log(error);
+        }
+
+    } else {
+
+    }
+
+    
+
 }
