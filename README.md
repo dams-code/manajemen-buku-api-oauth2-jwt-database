@@ -49,7 +49,7 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
  - ✅ Perbaikan redirect 403 dan dependencies pada role user
  - ✅ Membuat Models member + migrasi models ke database, route, dan repositories / controller
 
-- ⬜️ Membuat Model Transaksi pada manajemen buku
+- ⬜️ Membuat Model Peminjaman pada manajemen buku
 
 ### Perbedaan schemas/buku dari list dan sesudah migrasi ke database.
 ---

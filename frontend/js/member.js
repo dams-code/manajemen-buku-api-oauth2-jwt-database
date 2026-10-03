@@ -231,7 +231,7 @@ async function simpan_member(){
     const alamatMember = document.getElementById("alamat");
     const noTelpMember = document.getElementById("notelp");
 
-    console.log("test");
+    // console.log("test");
 
     const convIdMember = idMember ? parseInt(idMember, 10) : null;
         
