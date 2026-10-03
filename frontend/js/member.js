@@ -201,15 +201,12 @@ async function getDataMemberID(data){
             Swal.fire({
                 icon:"error",
                 title:"Load data member gagal",
-                text: `Data Member ${getUsername} tidak dapat di-load, ${error}`
+                text: `Data Member ${namaMember} tidak dapat di-load, ${error}`
             });
         }
 
-    } else {
-
     }
 }
-
 
 function setTambahMember(){
 
@@ -224,5 +221,77 @@ function setTambahMember(){
     document.getElementById("nama").value = "";
     document.getElementById("alamat").value = "";
     document.getElementById("notelp").value = "";
+
+}
+
+async function simpan_member(){
+
+    const idMember = document.getElementById("id").value;
+    const namaMember = document.getElementById("nama");
+    const alamatMember = document.getElementById("alamat");
+    const noTelpMember = document.getElementById("notelp");
+
+    console.log("test");
+
+    const convIdMember = idMember ? parseInt(idMember, 10) : null;
+        
+    const method = convIdMember ? "PUT": "POST";
+    const url = convIdMember ? `/member/${convIdMember}` : `/member`
+
+    try{
+        console.log(url);
+        console.log(method);
+
+        const data_member = {
+            nama: namaMember.value,
+            alamat: alamatMember.value,
+            no_telp: noTelpMember.value,
+        }
+
+        const response = await cek_auth_token(url, {
+            method: method,
+            body: JSON.stringify(data_member)
+        });
+
+        if(!response) return;
+
+        console.log(response);
+
+        if(response.ok){
+            await Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: id ? `Member ID ${idMember}, nama ${namaMember.value} berhasil diperbaharui` : "Member baru berhasil ditambah kedalam table",
+                timer: 1500,
+                showConfirmButton: false            
+            });
+
+            const elementModal = document.getElementById("modalmember");
+            const modalInstance = bootstrap.Modal.getInstance(elementModal);
+
+            if(modalInstance){
+                modalInstance.hide();
+            }
+            await getMember();
+
+        } else {
+            const errorDetail = await response.json();
+
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: `${errorDetail.pesan} | Gagal ${method} pada member terjadi error.`
+            });
+        }
+
+    } catch(error){
+        console.error("Error Simpan Member", error);
+
+        Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: `TIdak dapat terhubung ke FastAPI endpoint`
+        });
+    }
 
 }
