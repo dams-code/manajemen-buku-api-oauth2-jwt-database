@@ -121,7 +121,6 @@ async function getBuku(){
 getBuku();
 
 async function getDataBukuID(data){
-    document.getElementById("modalJudul").innerText = "Update Buku";
 
     const hideId = document.getElementById("hide-id-tambah-buku");
     
@@ -144,6 +143,8 @@ async function getDataBukuID(data){
         if(!data_buku) return;
 
         try{
+
+            document.getElementById("modalJudul").innerText = "Update Buku";
 
             // if (data_buku.status == 401) {
             //     localStorage.removeItem("access_token");

@@ -220,8 +220,7 @@ async function getDataUserID(data){
     const list_role = document.getElementById("list_role");
 
     // console.log(getIdUsername);
-
-    document.getElementById("modalJudul").innerText = "Update User";
+    
     document.getElementById("form-password").style.display = "none";
     
     if(getIdUsername){
@@ -242,6 +241,8 @@ async function getDataUserID(data){
 
                 throw new error(`Http error, status: ${data_user.status}`);
             }
+
+            document.getElementById("modalJudul").innerText = "Update User";
 
             const result = await data_user.json();
 

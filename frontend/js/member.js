@@ -170,21 +170,59 @@ async function getDataMemberID(data){
 
         if(!response) return;
 
+        document.getElementById("modalJudul").innerText = "Update Member";
+
         try{
-            result = await response.json();
 
-            if(result.ok){
+            if(!response.ok){
 
+                Swal.fire({
+                    icon: "error",
+                    title: "Load data member berdasarkan ID gagal",
+                    text: `Member ${id} tidak ditemukan`
+                });
+
+                throw new error(`Http error, status: ${data_user.status}`);
             }
 
+            result = await response.json();
+
+            idMember.value = result.data.id
+            namaMember.value = result.data.nama
+            alamatMember.value = result.data.alamat
+            noTelpMember.value = result.data.no_telp
+
+            return result;
+
         } catch(error){
+
             console.log(error);
+
+            Swal.fire({
+                icon:"error",
+                title:"Load data member gagal",
+                text: `Data Member ${getUsername} tidak dapat di-load, ${error}`
+            });
         }
 
     } else {
 
     }
+}
 
+
+function setTambahMember(){
+
+    document.getElementById("modalJudul").innerText = "Tambah Member";
+
+    document.getElementById("id").value = "";
     
+    document.getElementById("id").removeAttribute("disabled");
+
+    document.getElementById("hide-id-tambah-member").style.display = "none";
+
+    document.getElementById("nama").value = "";
+    document.getElementById("alamat").value = "";
+    document.getElementById("notelp").value = "";
 
 }
