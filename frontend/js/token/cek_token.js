@@ -13,7 +13,7 @@
 })();
 
 // cek expired token
-// cek_token berlaku diseluruh crud buku
+// cek_token berlaku diseluruh crud buku, member, manajemen user
 export async function cek_auth_token(url, options={}){
     const token = localStorage.getItem('access_token');
 
