@@ -1,4 +1,5 @@
 # from schemas.buku import BukuBase, Buku, ResultBuku
+from schemas.buku import BukuBase
 from schemas.user import UserBase
 from datetime import datetime
 from core.database import get_database
@@ -31,7 +32,7 @@ from models.buku import Buku
 #     }
 # ]
 
-async def result_get_buku(id: int | None=None, judul: str | None=None, sesi_db: AsyncSession = Depends(get_database))-> ResultBuku[BukuBase | list[BukuBase]]:
+async def result_get_buku(id: int | None=None, judul: str | None=None, sesi_db: AsyncSession = Depends(get_database))-> ResultBuku[list[BukuBase]]:
 # async def result_get_buku(id: int | None=None, judul: str | None=None, token: str | None=None) -> ResultBuku[BukuBase | list[BukuBase]]:
 # async def result_get_buku(id: int | None=None, judul: str | None=None) -> ResultBuku[BukuBase | list[BukuBase]]:
     
@@ -56,20 +57,6 @@ async def result_get_buku(id: int | None=None, judul: str | None=None, sesi_db: 
         query = query.where(or_(*conditions))
 
     result = await sesi_db.execute(query)
-
-    if id is not None or judul is not None:
-        result_data_buku = result.scalars_one_or_none()    
-        if result_data_buku is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Buku id {id} tidak ditemukan"
-            )
-
-        return ResultBuku[BukuBase](
-            status= status.HTTP_200_OK,
-            pesan= f"Data buku id {result_data_buku["id"]} - judul {result_data_buku["judul"]} berhasil terload",
-            data= BukuBase.model_validate(result_data_buku)
-        )
 
     # if id is not None or judul is not None:
     #     # result_data_buku = next((item_buku for item_buku in data_buku if (id is not None and item_buku["id"] == id) or (judul is not None and item_buku["judul"].lower() == judul.lower()) ), None)
@@ -96,11 +83,22 @@ async def result_get_buku(id: int | None=None, judul: str | None=None, sesi_db: 
             detail=f"Data buku tidak ditemukan"
         )
 
+    pesan = ""
+
+    data_buku = [BukuBase.model_validate(buku) for buku in list_buku]
+
+    if id is not None:
+        pesan += f"Buku id {id} ditemukan"
+    elif judul is not None:
+        pesan += f"Buku dengan awalan nama {judul} ditemukan"
+    else:
+        pesan += f"List data buku berhasil terload (total {len(list_buku)} buku)"
+
     return ResultBuku[list[BukuBase]](
         status=status.HTTP_200_OK,
-        pesan=f"List data buku berhasil terload (total {len(list_buku)} buku)",
+        pesan=pesan,
         # data=list_buku
-        data=[BukuBase.model_validate(item_buku) for item_buku in list_buku]
+        data=data_buku
     )
     
 async def result_get_buku_id(id: int, sesi_db: AsyncSession = Depends(get_database)) -> ResultBuku[BukuBase]:

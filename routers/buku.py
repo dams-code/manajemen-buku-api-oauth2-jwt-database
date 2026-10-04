@@ -15,7 +15,7 @@ router_buku = APIRouter(prefix="/buku", tags=["buku"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
-@router_buku.get("", response_model=ResultBuku[BukuBase | list[BukuBase]], dependencies=[Depends(CekRole([Roles.ADMIN, Roles.MANAJER]))])
+@router_buku.get("", response_model=ResultBuku[list[BukuBase]], dependencies=[Depends(CekRole([Roles.ADMIN, Roles.MANAJER]))])
 # async def get_buku(id: Annotated[int | None, Query()] = None, judul: Annotated[str | None, Query()] = None, token: Annotated[str, Depends(oauth2_scheme)] = None):
 async def get_buku(id: Annotated[int | None, Query()] = None, judul: Annotated[str | None, Query()] = None, sesi_db: AsyncSession = Depends(get_database)):
     

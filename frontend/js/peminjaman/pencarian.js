@@ -3,7 +3,6 @@ import { cek_auth_token } from "../token/cek_token.js";
 
 const cariMember = document.getElementById("cariMember");
 const dropDownListNamaMember = document.getElementById("dropDownListNamaMember");
-
 const alertHasil = document.getElementById("hasil-cari-nama-member");
 
 let queryPencarianMember;
@@ -108,3 +107,5 @@ cariMember.addEventListener("input", async function(event){
 
     }, 200);
 });
+
+
