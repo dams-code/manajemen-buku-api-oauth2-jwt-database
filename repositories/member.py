@@ -1,4 +1,3 @@
-from schemas.member import MemberBase
 from models.member import Member
 from schemas.member import *
 

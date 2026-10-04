@@ -1,5 +1,3 @@
-from schemas.user import ResultUser
-from schemas.user import UserResponse
 from datetime import timedelta
 from helpers.security import *
 from fastapi import Depends
