@@ -1,4 +1,6 @@
 
+import {cek_auth_token} from './token/cek_token.js';
+
 async function getBuku(){
 
     const data_buku = await cek_auth_token("/buku");
@@ -176,6 +178,7 @@ async function getDataBukuID(data){
             list_tersedia.value = result.data.tersedia
 
             return result
+
         } catch(error){
             console.error("Gagal mengambil data buku: ", error)
 
@@ -187,6 +190,8 @@ async function getDataBukuID(data){
         }
     }
 }
+
+window.getDataBukuID = getDataBukuID;
 
 async function simpan_buku(){
     const idVal = document.getElementById("id").value;
@@ -274,6 +279,8 @@ async function simpan_buku(){
 
 }
 
+window.simpan_buku = simpan_buku;
+
 async function hapusBuku(data){
     const id = parseInt(data.dataset.id);
 
@@ -336,6 +343,8 @@ async function hapusBuku(data){
     }
 }
 
+window.hapusBuku = hapusBuku;
+
 function setTambahBuku(){
     document.getElementById("modalJudul").innerText = "Tambah Buku";
 
@@ -352,6 +361,8 @@ function setTambahBuku(){
     document.getElementById("list_genre").value = "";
     document.getElementById("list_tersedia").value = "true";
 }
+
+window.setTambahBuku = setTambahBuku;
 
 async function updateStatusBuku(data){
     const id = parseInt(data.dataset.id)
@@ -400,3 +411,5 @@ async function updateStatusBuku(data){
         data.disabled = false;
     }
 }
+
+window.updateStatusBuku = updateStatusBuku;

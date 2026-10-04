@@ -1,3 +1,5 @@
+import { cek_auth_token } from "../token/cek_token.js";
+
 (async function(){
     const data_user = await cek_auth_token(`/user/aktif`)
 

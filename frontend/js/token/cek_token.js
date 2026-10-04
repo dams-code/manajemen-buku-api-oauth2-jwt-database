@@ -14,7 +14,7 @@
 
 // cek expired token
 // cek_token berlaku diseluruh crud buku
-async function cek_auth_token(url, options={}){
+export async function cek_auth_token(url, options={}){
     const token = localStorage.getItem('access_token');
 
     if(!token){
@@ -63,3 +63,30 @@ async function cek_auth_token(url, options={}){
         throw error;
     }
 }
+
+function tanggalJam() {
+    const now = new Date();
+
+    const jam = now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
+
+    const tanggal = now.toLocaleDateString('id-ID', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+
+    const elementJam = document.getElementById('tanggal_jam');
+    if (elementJam) {
+        elementJam.innerHTML = `${tanggal} &bull; <strong>${jam}</strong>`;
+    }
+}
+
+tanggalJam();
+
+setInterval(tanggalJam, 1000);

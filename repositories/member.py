@@ -1,3 +1,4 @@
+from schemas.member import MemberBase
 from models.member import Member
 from schemas.member import *
 
@@ -7,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends, HTTPException, status
 
 
-async def result_get_member(id: int | None, nama: str | None, sesi_db: AsyncSession) -> ResultMember[MemberBase | list[MemberBase]]:
+async def result_get_member(id: int | None, nama: str | None, sesi_db: AsyncSession) -> ResultMember[list[MemberBase]]:
 
     query = select(Member)
 
@@ -24,21 +25,6 @@ async def result_get_member(id: int | None, nama: str | None, sesi_db: AsyncSess
 
     result = await sesi_db.execute(query)
 
-    if id is not None or nama is not None:
-        result_data_member = result.scalar_one_or_none()    
-
-        if result_data_member is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Member dengan id {id} atau nama {nama} tidak ditemukan"
-            )
-
-        return ResultMember[MemberBase](
-            status=status.HTTP_200_OK,
-            pesan=f"Data member {nama} berhasil ditemukan",
-            data=MemberBase.model_validate(result_data_member)
-        )
-
     result_data_member = result.scalars().all()
 
     if result_data_member is None or len(result_data_member) == 0:
@@ -47,10 +33,19 @@ async def result_get_member(id: int | None, nama: str | None, sesi_db: AsyncSess
             detail=f"Data member tidak ditemukan"
         )
 
+    data_member = [MemberBase.model_validate(member) for member in result_data_member];
+
+    if id is not None:
+        pesan=f"Member id {id} ditemukan"
+    elif nama is not None:
+        pesan=f"Member dengan awalan nama {nama} ditemukan, total {len(nama)} data"
+    else:
+        pesan=f"List data member berhasil terload (total {len(result_data_member)} member)"
+
     return ResultMember[list[MemberBase]](
         status=status.HTTP_200_OK,
-        pesan=f"List data member berhasil terload (total {len(result_data_member)} member)",
-        data=[MemberBase.model_validate(member) for member in result_data_member]
+        pesan=pesan,
+        data=data_member
     )
 
 

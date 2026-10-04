@@ -1,3 +1,4 @@
+import { cek_auth_token } from "./token/cek_token.js";
 
 async function getMember(){
 
@@ -7,7 +8,7 @@ async function getMember(){
 
     const hasil = await dataMember.json();
 
-    tbody = document.getElementById("dataMember");
+    const tbody = document.getElementById("dataMember");
 
     const user = await cek_auth_token("/user/aktif");
     const hasil_user = await user.json();
@@ -91,6 +92,14 @@ async function getMember(){
 
             tbody.innerHTML = htmlRows;
 
+            Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "Data Member berhasil ter-load ke table",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
         } catch(error){
             console.log("Gagal mengambil data member: ", error);
 
@@ -156,6 +165,8 @@ async function updateStatusMember(data){
     }
 }
 
+window.updateStatusMember = updateStatusMember;
+
 async function getDataMemberID(data){
 
     const id = data.dataset.id;
@@ -185,7 +196,7 @@ async function getDataMemberID(data){
                 throw new error(`Http error, status: ${data_user.status}`);
             }
 
-            result = await response.json();
+            const result = await response.json();
 
             idMember.value = result.data.id
             namaMember.value = result.data.nama
@@ -201,12 +212,14 @@ async function getDataMemberID(data){
             Swal.fire({
                 icon:"error",
                 title:"Load data member gagal",
-                text: `Data Member ${namaMember} tidak dapat di-load, ${error}`
+                text: `Data Member ${namaMember} tidak dapat di-load, ${error.message}`
             });
         }
 
     }
 }
+
+window.getDataMemberID = getDataMemberID;
 
 function setTambahMember(){
 
@@ -223,6 +236,8 @@ function setTambahMember(){
     document.getElementById("notelp").value = "";
 
 }
+
+window.setTambahMember = setTambahMember;
 
 async function simpan_member(){
 
@@ -293,5 +308,6 @@ async function simpan_member(){
             text: `TIdak dapat terhubung ke FastAPI endpoint`
         });
     }
-
 }
+
+window.simpan_member = simpan_member;

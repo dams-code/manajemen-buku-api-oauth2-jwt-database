@@ -6,7 +6,7 @@ from typing import Optional, List
 
 class TimestampPeminjaman:
     created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
-    created_by: Mapped[str] = mapped_column(String(50))
+    created_by: Mapped[str] = mapped_column(String(50), nullable=False)
 
     modify_at: Mapped[Optional[DateTime]] = mapped_column(DateTime, onupdate=func.now(), nullable=True)
     modify_by: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
@@ -16,11 +16,11 @@ class HPeminjaman(Base, TimestampPeminjaman):
     __tablename__ = "hpeminjaman"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    no_pinjam: Mapped[str] = mapped_column(String(7), index=True, unique=True)
+    no_pinjam: Mapped[str] = mapped_column(String(14), index=True, unique=True)
     qty_pinjam: Mapped[int] = mapped_column(Integer)
     member_id: Mapped[int] = mapped_column(ForeignKey("member.id"))
     tanggal_pinjam: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
-    tanggal_kembali: Mapped[Optional[DateTime | None]] = mapped_column(DateTime, nullable=True)
+    tanggal_kembali: Mapped[Optional[DateTime]] = mapped_column(DateTime, nullable=True)
     details: Mapped[List["DPeminjaman"]] = relationship(
         "DPeminjaman",
         back_populates="header",

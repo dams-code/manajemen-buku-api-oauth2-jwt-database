@@ -9,7 +9,7 @@ from repositories.member import *
 
 router_member = APIRouter(prefix="/member",tags=["member"])
 
-@router_member.get("", response_model=ResultMember[MemberBase | list[MemberBase]], dependencies=[Depends(CekRole([Roles.ADMIN, Roles.MANAJER]))])
+@router_member.get("", response_model=ResultMember[list[MemberBase]], dependencies=[Depends(CekRole([Roles.ADMIN, Roles.MANAJER]))])
 async def get_member(id: Annotated[int | None, Query()] = None, nama: Annotated[str | None, Query()] = None, sesi_db: AsyncSession = Depends(get_database)):
 
     return await result_get_member(id, nama, sesi_db)
