@@ -1,5 +1,5 @@
 
-import { cek_auth_token } from "../token/cek_token.js";
+import { cek_auth_token } from "./../token/cek_token.js";
 
 const cariMember = document.getElementById("cariMember");
 const dropDownListNamaMember = document.getElementById("dropDownListNamaMember");

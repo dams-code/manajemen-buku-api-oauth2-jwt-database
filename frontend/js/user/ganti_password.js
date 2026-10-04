@@ -1,4 +1,4 @@
-import { cek_auth_token } from "./token/cek_token.js";
+import { cek_auth_token } from "./../token/cek_token.js";
 
 
 const username = document.getElementById("username");
