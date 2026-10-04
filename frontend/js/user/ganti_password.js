@@ -99,3 +99,5 @@ async function gantiPasswordUser(e){
     }
 
 }
+
+window.gantiPasswordUser = gantiPasswordUser;

@@ -60,7 +60,7 @@ async function getMember(){
                     ${admin ? `
                         <td class="d-flex gap-3 justify-content-center">
                             <button class="btn btn-primary d-flex col-gap-3" type="button" data-bs-toggle="modal" data-bs-target="#modalmember" data-id=${item.id} onclick="getDataMemberID(this);"><i class="bi bi-pencil"></i> Update</button>
-                            <button class="btn btn-outline-danger d-flex col-gap-3" data-id=${item.id} type="button" onclick="hapusMember(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
+                            <button class="btn btn-outline-danger d-flex col-gap-3" data-id=${item.id} data-nama=${item.nama} type="button" onclick="hapusMember(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
                         </td>` : `<td class="align-middle"><span>&nbsp;</span></td>`
                     }
                     
@@ -311,3 +311,56 @@ async function simpan_member(){
 }
 
 window.simpan_member = simpan_member;
+
+
+async function hapusMember(data){
+    
+    const id = data.dataset.id;
+    const namaMember = data.dataset.nama;
+
+    const result = await Swal.fire({
+        title: `Yakin ingin menghapus member ${namaMember} ?`,
+        text: `Member ${namaMember} akan dihapus permanen`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    });
+
+    if (result.isConfirmed){
+        try{
+            const response_delete_member = await cek_auth_token(`/member/${id}`, {
+                method: 'DELETE'
+            });
+
+            if(!response_delete_member) return;
+
+            if(response_delete_member.ok){
+                await Swal.fire({
+                    icon: 'success',
+                        title: 'Terhapus',
+                        text: `Member ${namaMember} berhasil terhapus`,
+                        timer: 1100,
+                        showConfirmButton: false
+                });
+
+                await getMember();
+                
+            } else {
+                const errorDetail = await response.json();
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal hapus member',
+                    text: `${errorDetail.pesan} | Member ${getUsername} Gagal dihapus.`
+                });
+            }
+        } catch(error){
+            console.error(error.message);
+        }
+    }
+}
+
+window.hapusMember = hapusMember;
