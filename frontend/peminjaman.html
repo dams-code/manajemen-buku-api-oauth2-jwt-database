@@ -215,17 +215,18 @@
                         2. Cari dan Tambah Buku
                     </h6>
 
-                    <div class="mb-3">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-barcode-scan text-primary"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0 ps-0 fs-6" placeholder="Scan Barcode / Ketik Judul Buku atau ISBN...">
+                    <div class="row mb-3 g-3">
+                        <div class="col">
+                            <label class="form-label small text-muted">Cari Member</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                                <input type="text" id="cariBuku" class="form-control fs-6" placeholder="Scan Barcode / Ketik Judul Buku atau ISBN...">
+                            </div>
                         </div>
                     </div>
 
                     <label class="form-label small text-muted fw-bold">Hasil Pencarian Buku:</label>
-                    <div class="row row-cols-1 row-cols-md-2 g-3">
+                    <div class="g-3" id="listBuku" style="display: none; opacity: 0; transition: opacity 0.4s ease-in-out transform 0.3s ease-in-out; transform: translateY(-8px);">
 
                         <!-- <div class="col">
                             <div class="card h-100 border rounded-3 p-2 d-flex flex-row align-items-center">
@@ -234,11 +235,10 @@
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden">
                                     <h6 class="mb-1 text-truncate fw-bold text-dark" id="judulBuku">FastAPI & Python Pro</h6>
-                                    <p class="mb-0 text-muted small">Penerbit: <span id="penerbitBuku">Andi</span></p>
                                     <p class="mb-0 text-muted small">Genre: <span id="genreBuku">Edukasi</span></p>
                                     <p class="mb-0 text-muted small">Stok: <span id="stokBuku" class="badge bg-success">5</span></p>
                                 </div>
-                                <button class="btn btn-sm btn-primary rounded-circle ms-2" title="Tambah ke transaksi">
+                                <button class="btn btn-sm btn-primary rounded-circle ms-2" title="Tambah ke transaksi peminjaman">
                                     <i class="bi bi-plus-lg"></i>
                                 </button>
                             </div>
@@ -345,7 +345,7 @@
     <script href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/auth/sesi_user_aktif.js" type="module"></script>
-    <script src="js/logout.js"></script>
+    <script src="js/auth/logout.js"></script>
 
     <script src="js/peminjaman/pencarian.js" type="module"></script>
 </body>
