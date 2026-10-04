@@ -3,15 +3,27 @@ import { cek_auth_token } from "../token/cek_token.js";
 
 const cariMember = document.getElementById("cariMember");
 const dropDownListNamaMember = document.getElementById("dropDownListNamaMember");
-const namaMember = document.getElementById("namaMember");
+
 const alertHasil = document.getElementById("hasil-cari-nama-member");
 
 let queryPencarianMember;
 
-function showAlertMember(nama, id){
-    namaMember.innerText = `${id} - ${nama}`;
+function showAlertMember(data){
+    const namaMember = document.getElementById("namaMember");
+    const namaMemberInfo = document.getElementById("namaMemberInfo");
+    const alamatMemberInfo = document.getElementById("alamatMemberInfo");
+    const notelpMemberInfo = document.getElementById("notelpMemberInfo");
+    const statusMemberInfo = document.getElementById("statusMemberInfo");
+    
+    namaMember.innerText = `${data.id} - ${data.nama}`;
 
-    alertHasil.style.display = "flex";
+    namaMemberInfo.innerHTML = data.nama;
+    alamatMemberInfo.innerHTML = data.alamat;
+    notelpMemberInfo.innerHTML = data.no_telp;
+    statusMemberInfo.innerHTML = data.status ? "Aktif" : "Tidak Aktif";
+
+    alertHasil.style.display = "grid";
+    alertHasil.className="row-gap-2 p-3";
 
     setTimeout(() => {
         alertHasil.style.opacity = "1";
@@ -69,19 +81,21 @@ cariMember.addEventListener("input", async function(event){
                 dropDownListNamaMember.style.display = "block";
                 
                 hasil_cari_member.forEach(member => {
-                    const li = document.createElement("li");
-                    li.className = "list-group-item list-group-item-action cursor-pointer py-2";
-                    li.innerText = `ID: ${member.id} ${member.nama}`;
+                    if(member.status == true){
+                        const li = document.createElement("li");
+                        li.className = "list-group-item list-group-item-action cursor-pointer py-2";
+                        li.innerText = `ID: ${member.id} ${member.nama}`;
 
-                    li.onclick = function(){
-                        // namaMember.innerText = member.nama;
-                        showAlertMember(member.nama, member.id);
-                        cariMember.value = member.nama;
-                        dropDownListNamaMember.innerHTML = "";
-                        dropDownListNamaMember.style.display = "none";
-                    };
+                        li.onclick = function(){
+                            // namaMember.innerText = member.nama;
+                            showAlertMember(member);
+                            cariMember.value = member.nama;
+                            dropDownListNamaMember.innerHTML = "";
+                            dropDownListNamaMember.style.display = "none";
+                        };
 
-                    dropDownListNamaMember.appendChild(li);
+                        dropDownListNamaMember.appendChild(li);
+                    }
                 });
             } else {
                 dropDownListNamaMember.style.display = "block";

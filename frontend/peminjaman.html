@@ -169,10 +169,43 @@
                         </div>
                     </div>
 
-                    <div id="hasil-cari-nama-member" class="alert alert-primary d-flex align-items-center mt-3 mb-0 py-2" role="alert" style="display: none; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.3s ease-in-out; transform: translateY(-8px);">
-                        <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                        <div>
-                            <strong id="namaMember"></strong> (Max Pinjam: 3 Buku)
+                    <div id="hasil-cari-nama-member" style="display: none; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.3s ease-in-out; transform: translateY(-8px);">
+                        
+                        <div class="alert alert-primary d-flex align-items-center mt-3 mb-0 py-2 w-100" role="alert">
+                            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                            <strong id="namaMember"></strong> &nbsp; (Max Pinjam: 3 Buku)
+                        </div>
+
+                        <div class="">
+                            <div class="card w-100">
+                            <div class="card-body">
+                                
+                                <div class="row">
+                                    <div class="col d-inline-flex align-items-center justify-content-start gap-3">
+                                        <h5 class="card-title align-content-center m-0">Data Member</h5>
+                                        <p class="m-0 fs-6 badge text-bg-success align-content-center" id="statusMemberInfo"></p>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                    <div class="mb-2 d-inline-flex gap-2">
+                                        <p class="m-0 fs-6" style="width: 100px;">Nama</p>
+                                        <p class="m-0 fs-6">:</p>
+                                        <p class="m-0 fs-6" id="namaMemberInfo"></p>
+                                    </div>
+                                    <div class="mb-2 d-inline-flex gap-2">
+                                        <p class="m-0 fs-6" style="width: 100px;">Alamat</p>
+                                        <p class="m-0 fs-6">:</p>
+                                        <p class="m-0 fs-6" id="alamatMemberInfo"></p>
+                                    </div>
+                                    <div class="mb-2 d-inline-flex gap-2">
+                                        <p class="m-0 fs-6" style="width: 100px;">No Telepon</p>
+                                        <p class="m-0 fs-6">:</p>
+                                        <p class="m-0 fs-6" id="notelpMemberInfo"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
