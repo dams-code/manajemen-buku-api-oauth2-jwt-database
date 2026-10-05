@@ -207,7 +207,7 @@ cariBuku.addEventListener("input", async function(event){
 
                 const htmlRows = document.createElement("div");
 
-                htmlRows.className = "row row-cols-1 row-cols-md-2 p-3 g-3";
+                htmlRows.className = "row row-cols-1 row-cols-md-2 g-3";
 
                 htmlRows.innerHTML = data_buku.map(item => `
                     <div class="col-6">
@@ -219,7 +219,7 @@ cariBuku.addEventListener("input", async function(event){
                                 <h6 class="mb-1 text-truncate fw-bold text-dark">${item.judul}</h6>
                                 <p class="mb-0 text-muted small"><span style="width:100px;">Penulis</span>: ${item.penulis}</span></p>
                                 <p class="mb-0 text-muted small"><span style="width:100px;">Genre</span>: ${item.genre}</span></p>
-                                <p class="mb-0 text-muted small"><span style="width:100px;">Stok</span>: $nbsp;<span id="stokBuku" class="badge bg-success">${item.qty}</span></p>
+                                <p class="mb-0 text-muted small"><span style="width:100px;">Stok</span>:<span id="stokBuku" class="badge bg-success p-1 ms-2">${item.qty}</span></p>
                             </div>
                             <button class="btn btn-sm btn-primary rounded-circle ms-2" data-id="${item.id}" title="Tambah ke transaksi peminjaman" onclick="getDataBukuByID(this);">
                                 <i class="bi bi-plus-lg"></i>
