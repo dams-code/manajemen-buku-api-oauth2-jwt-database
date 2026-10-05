@@ -186,8 +186,7 @@
                             <strong id="namaMember"></strong> &nbsp; (Max Pinjam: 3 Buku)
                         </div>
 
-                        <div class="">
-                            <div class="card w-100">
+                        <div class="card w-100">
                             <div class="card-body">
                                 
                                 <div class="row">
@@ -215,12 +214,16 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
+                        </div>
+                        
+                        <div class="d-inline-flex justify-content-center mt-3 gap-3">
+                            <button type="button" class="shadow btn btn-primary" style="width: 240px;" onclick="buatDetailPeminjamanBuku(this)">Buat Detail Peminjaman</button>
+                            <button type="button" class="btn btn-danger" onclick="batalBuatPeminjamanBuku(this)">Batal Buat Detail Peminjaman</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="card pos-card p-3">
+                <div class="card pos-card p-3" id="cariTambahBuku" style="display: none; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.3s ease-in-out; transform: translateY(-8px);">
                     <h6 class="fw-bold mb-3 text-secondary">
                         2. Cari dan Tambah Buku
                     </h6>
@@ -259,13 +262,13 @@
 
             </div>
 
-            <div class="col-lg-5">
+            <div class="col-lg-5" id="daftarPeminjaman" style="display: none; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.3s ease-in-out; transform: translateY(-8px);">
                 <div class="card pos-card p-3 h-100 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0 text-secondary">
                             Daftar Peminjaman
                         </h6>
-                        <button class="btn btn-sm btn-outline-danger border-0" onclick="hapusListPinjamBuku()">
+                        <button class="btn btn-sm btn-outline-danger border-0" id="hapusListPinjamBukuId" onclick="hapusListPinjamBuku(this)" style="display: none; opacity: 0; transition: opacity 0.4s ease-in-out transform 0.3s ease-in-out; transform: translateY(-8px);">
                             <i class="bi bi-trash me-1"></i>Reset
                         </button>
                     </div>
@@ -328,6 +331,7 @@
     <script src="js/auth/logout.js"></script>
 
     <script src="js/peminjaman/pencarian.js" type="module"></script>
+    <script src="js/peminjaman/control.js" type="module"></script>
 </body>
 
 </html>

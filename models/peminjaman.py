@@ -16,6 +16,7 @@ class TimestampPeminjaman:
 class StatusPinjam(str, enum.Enum):
     TERBUAT = "terbuat"
     KEMBALI = "kembali"
+    DIPINJAM = "dipinjam"
     BATAL = "batal"
 
 class HPeminjaman(Base, TimestampPeminjaman):
