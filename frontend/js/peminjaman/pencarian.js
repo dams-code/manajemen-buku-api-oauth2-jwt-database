@@ -390,3 +390,22 @@ function hapusItemBuku(btn){
 }
 
 window.hapusItemBuku = hapusItemBuku;
+
+
+function hapusListPinjamBuku(){
+    const tbody = document.getElementById("listPinjamBuku");
+
+    if(tbody){
+        // tbody.replaceChildren();
+        
+        tbody.innerHTML = `
+            <tr id="RowsKosong">
+                <td colspan="3" class="text-center text-muted py-3">
+                    Belum ada buku yang dipilih
+                </td>
+            </tr>
+        `;
+    }
+}
+
+window.hapusListPinjamBuku = hapusListPinjamBuku;
