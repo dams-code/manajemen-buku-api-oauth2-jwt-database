@@ -9,6 +9,7 @@ let queryPencarianMember;
 
 function showAlertMember(data){
     const namaMember = document.getElementById("namaMember");
+    const IDMemberInfo = document.getElementById("IDMemberInfo");
     const namaMemberInfo = document.getElementById("namaMemberInfo");
     const alamatMemberInfo = document.getElementById("alamatMemberInfo");
     const notelpMemberInfo = document.getElementById("notelpMemberInfo");
@@ -16,6 +17,7 @@ function showAlertMember(data){
     
     namaMember.innerText = `${data.id} - ${data.nama}`;
 
+    IDMemberInfo.innerHTML = data.id;
     namaMemberInfo.innerHTML = data.nama;
     alamatMemberInfo.innerHTML = data.alamat;
     notelpMemberInfo.innerHTML = data.no_telp;
