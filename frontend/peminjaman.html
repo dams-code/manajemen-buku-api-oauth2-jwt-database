@@ -79,6 +79,16 @@
         body nav:nth-child(2) ol li:first-child a{
             color: #1da0ff !important;
         }
+
+        #listPinjamBuku input[type="number"]::-webkit-outer-spin-button,
+        #listPinjamBuku input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        #listPinjamBuku input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 
@@ -165,7 +175,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-muted">ID Transaksi Baru</label>
-                            <input type="text" class="form-control bg-light fw-bold text-primary" value="PNJ-202610001" readonly>
+                            <input type="text" class="form-control bg-light fw-bold text-primary" value="PNJ-202610001" readonly style="pointer-events: none;">
                         </div>
                     </div>
 
@@ -269,40 +279,10 @@
                                     <th class="text-end" style="width: 40px;"></th>
                                 </tr>
                             </thead>
-                            <tbody id="listOrderBuku">
-                                <tr>
-                                    <td>
-                                        <div class="fw-bold text-dark text-truncate" style="max-width: 180px;">
-                                            FastAPI & Python Pro
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-inline-flex align-items-center border rounded px-1">
-                                            <button class="btn btn-light btn-qty"><i class="bi bi-dash"></i></button>
-                                            <span class="mx-2 fw-bold">1</span>
-                                            <button class="btn btn-light btn-qty"><i class="bi bi-plus"></i></button>
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm text-danger"><i class="bi bi-x-lg"></i></button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="fw-bold text-dark text-truncate" style="max-width: 180px;">
-                                            Desain Database Relasional
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-inline-flex align-items-center border rounded px-1">
-                                            <button class="btn btn-light btn-qty"><i class="bi bi-dash"></i></button>
-                                            <span class="mx-2 fw-bold">1</span>
-                                            <button class="btn btn-light btn-qty"><i class="bi bi-plus"></i></button>
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm text-danger"><i class="bi bi-x-lg"></i></button>
+                            <tbody id="listPinjamBuku">
+                                <tr id="RowsKosong">
+                                    <td colspan="3" class="text-center text-muted py-3">
+                                        Belum ada buku yang dipilih
                                     </td>
                                 </tr>
                             </tbody>
@@ -323,7 +303,7 @@
 
                         <div class="d-flex justify-content-between align-items-center pt-2 border-top">
                             <span class="fw-semibold text-secondary">Total Qty Buku:</span>
-                            <span class="fs-4 fw-bold text-primary">2 Item</span>
+                            <span class="fs-4 fw-bold text-primary" id="totalPinjamBuku"></span>
                         </div>
                     </div>
 
