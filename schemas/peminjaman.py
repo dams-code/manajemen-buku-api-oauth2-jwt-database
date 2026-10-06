@@ -6,7 +6,6 @@ from typing import List, Generic, TypeVar, Optional
 T = TypeVar("T")
 
 class DPeminjamanCreate(BaseModel):
-    header_id: int
     buku_id: int
     qty: int
 
@@ -34,18 +33,16 @@ class ResultDpeminjaman(BaseModel, Generic[T]):
 
 class HPeminjamanCreate(BaseModel):
     member_id: int
-    no_pinjam: str
     qty_pinjam: int
     tanggal_pinjam: datetime
     tanggal_kembali: datetime | None
-    status: str
+    status: str = "TERBUAT"
 
     created_at: datetime
     created_by: str
     modify_at: datetime | None
     modify_by: str | None
 
-    nama_member: str | None
     details: List[DPeminjamanResponse]
 
     model_config = ConfigDict(from_attributes=True)
