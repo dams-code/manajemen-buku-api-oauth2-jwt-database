@@ -10,6 +10,7 @@ class DPeminjamanResponse(BaseModel):
     id: int
     header_id: int
     buku_id: int
+    qty: int
 
     judul: str | None
     penulis: str | None

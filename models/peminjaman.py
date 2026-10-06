@@ -48,5 +48,6 @@ class DPeminjaman(Base, TimestampPeminjaman):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     header_id: Mapped[int] = mapped_column(ForeignKey("hpeminjaman.id"))
     buku_id: Mapped[int] = mapped_column(ForeignKey("buku.id"))
+    qty: Mapped[int] = mapped_column(Integer)
 
     header: Mapped["HPeminjaman"] = relationship("HPeminjaman", back_populates="details")
