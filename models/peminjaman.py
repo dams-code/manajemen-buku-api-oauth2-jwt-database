@@ -1,13 +1,16 @@
-from multiprocessing.spawn import prepare
-from alembic.autogenerate.compare import server_defaults
+from __future__ import annotations
+
 from core.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, func, DateTime, ForeignKey, Enum as sqlEnum
-from typing import Optional, List
+from typing import TYPE_CHECKING, Optional, List
 
 from models.buku import Buku
 
 import enum
+
+if TYPE_CHECKING:
+    from models.member import Member
 
 class TimestampPeminjaman:
     created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
@@ -44,6 +47,8 @@ class HPeminjaman(Base, TimestampPeminjaman):
         lazy="selectin"
     )
 
+    member_ref: Mapped["Member"] = relationship("Member", back_populates="hpeminjaman_ref", lazy="joined")
+
 class DPeminjaman(Base, TimestampPeminjaman):
 
     __tablename__ = "dpeminjaman"
@@ -62,7 +67,7 @@ class DPeminjaman(Base, TimestampPeminjaman):
     
     @property
     def penulis(self) -> str | None:
-        return self.buku.penulis if self.penulis else None
+        return self.buku.penulis if self.buku else None
 
     @property
     def genre(self) -> str | None:

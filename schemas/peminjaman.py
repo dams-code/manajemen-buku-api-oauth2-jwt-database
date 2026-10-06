@@ -1,7 +1,8 @@
 from pydantic import BaseModel, ConfigDict
-import datetime
+from datetime import datetime
 
 from typing import List, Generic, TypeVar, Optional
+from models.peminjaman import StatusPinjam
 
 T = TypeVar("T")
 
@@ -43,7 +44,7 @@ class HPeminjamanCreate(BaseModel):
     modify_at: datetime | None
     modify_by: str | None
 
-    details: List[DPeminjamanResponse]
+    details: List[DPeminjamanCreate]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -54,6 +55,7 @@ class HPeminjamanResponse(BaseModel):
     qty_pinjam: int
     tanggal_pinjam: datetime
     tanggal_kembali: datetime | None
+    status: StatusPinjam
 
     created_at: datetime
     created_by: str
@@ -61,7 +63,7 @@ class HPeminjamanResponse(BaseModel):
     modify_by: str | None
 
     nama_member: str | None
-    details = list[DPeminjamanResponse] = []
+    details: list[DPeminjamanResponse] = []
     
     model_config = ConfigDict(from_attributes=True)
 

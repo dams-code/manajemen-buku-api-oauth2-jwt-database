@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from routers.buku import router_buku
 from routers.user import router_user
 from routers.member import router_member
+from routers.peminjaman import router_peminjaman
 
 from fastapi.staticfiles import StaticFiles
 
@@ -30,6 +31,7 @@ async def set_Format_JSON_Handler(request: Request, exc: HTTPException):
 app.include_router(router_user)
 app.include_router(router_buku)
 app.include_router(router_member)
+app.include_router(router_peminjaman)
 
 origins = [
     "http://127.0.0.1:8000",

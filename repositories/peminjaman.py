@@ -1,4 +1,4 @@
-from schemas.peminjaman import ResultHpeminjaman
+from models.peminjaman import HPeminjaman
 from models.member import Member
 from datetime import datetime
 from schemas.peminjaman import *
@@ -8,6 +8,7 @@ from helpers.generate_no_pinjam import generate_no_pinjam
 from core.database import get_database
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from fastapi import Depends, status, HTTPException
 
 async def result_add_Hpinjam(hpeminjaman: HPeminjamanCreate, username_aktif: str, sesi_db: AsyncSession = Depends(get_database)) -> ResultHpeminjaman[HPeminjamanResponse]:
@@ -27,13 +28,13 @@ async def result_add_Hpinjam(hpeminjaman: HPeminjamanCreate, username_aktif: str
         )
 
     try:
-        generate_no_pinjam = await generate_no_pinjam(sesi_db)
+        set_no_pinjam = await generate_no_pinjam(sesi_db)
 
         total_qty = sum(item.qty for item in hpeminjaman.details)
 
         result_header_pinjam = HPeminjaman(
             member_id=hpeminjaman.member_id,
-            no_pinjam = generate_no_pinjam,
+            no_pinjam = set_no_pinjam,
             qty_pinjam = total_qty,
             tanggal_pinjam = hpeminjaman.tanggal_pinjam,
             tanggal_kembali = hpeminjaman.tanggal_kembali,
@@ -61,7 +62,7 @@ async def result_add_Hpinjam(hpeminjaman: HPeminjamanCreate, username_aktif: str
                     detail=f"Stok buku {buku.judul} tidak mencukupi, stok tinggal {buku.qty}"
                 )
 
-            buku.qty = item.qty
+            buku.qty -= item.qty
 
             result_detail_pinjam = DPeminjaman(
                 header_id = result_header_pinjam.id,
@@ -75,16 +76,24 @@ async def result_add_Hpinjam(hpeminjaman: HPeminjamanCreate, username_aktif: str
 
         await sesi_db.commit()
 
-
-        query = select(HPeminjaman).where(HPeminjaman.id == result_header_pinjam.id)
-
+        query = (
+            select(HPeminjaman)
+            .options(
+                selectinload(HPeminjaman.member_ref),
+                selectinload(HPeminjaman.details).selectinload(DPeminjaman.buku),
+            )
+            .where(HPeminjaman.id == result_header_pinjam.id)
+        )
+        
         result = await sesi_db.execute(query)
 
         cek_hasil_header_pinjam = result.scalar_one()
 
+        cek_hasil_header_pinjam.nama_member = getMember_id.nama
+
         return ResultHpeminjaman[HPeminjamanResponse](
             status=status.HTTP_201_CREATED,
-            detail=f"Peminjaman buku berhasil dibuat",
+            pesan=f"Peminjaman buku berhasil dibuat",
             data=HPeminjamanResponse.model_validate(cek_hasil_header_pinjam)
         )
 

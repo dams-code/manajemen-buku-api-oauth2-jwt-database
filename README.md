@@ -435,6 +435,10 @@ pip install "fastapi[standard]" "pwdlib[argon2]" python-dotenv
 pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
 ```
 
+```bash
+pip install pytest pytest-asyncio
+```
+
 6. migrasi model ke database dengan alembic
 
 ```bash
