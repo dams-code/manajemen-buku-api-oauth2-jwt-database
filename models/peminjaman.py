@@ -1,8 +1,11 @@
+from multiprocessing.spawn import prepare
 from alembic.autogenerate.compare import server_defaults
 from core.database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, func, DateTime, ForeignKey, Enum as sqlEnum
 from typing import Optional, List
+
+from models.buku import Buku
 
 import enum
 
@@ -51,3 +54,16 @@ class DPeminjaman(Base, TimestampPeminjaman):
     qty: Mapped[int] = mapped_column(Integer)
 
     header: Mapped["HPeminjaman"] = relationship("HPeminjaman", back_populates="details")
+    buku: Mapped["Buku"] = relationship("Buku", lazy="joined")
+
+    @property
+    def judul(self) -> str | None:
+        return self.buku.judul if self.buku else None
+    
+    @property
+    def penulis(self) -> str | None:
+        return self.buku.penulis if self.penulis else None
+
+    @property
+    def genre(self) -> str | None:
+        return self.buku.genre if self.buku else None

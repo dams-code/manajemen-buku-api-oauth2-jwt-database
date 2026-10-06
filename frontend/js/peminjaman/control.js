@@ -310,7 +310,6 @@ function prosesPinjamBuku(){
 
     const tbody = document.getElementById("listPinjamBuku");
     const listBuku = tbody.querySelectorAll("tr[data-id]");
-    const no_pinjam = document.getElementById("idPeminjamanBuku");
     const qty_pinjam = document.getElementById("totalPinjamBuku");
     const member_id = document.getElementById("IDMemberInfo");
 
@@ -329,7 +328,7 @@ function prosesPinjamBuku(){
     });
 
     const hasilProsesPinjamBuku = {
-        no_pinjam: no_pinjam,
+        // no_pinjam: no_pinjam,
         member_id: member_id,
         qty_pinjam: qty_pinjam,
         tanggal_pinjam: tanggalISO.tanggalPinjam,
