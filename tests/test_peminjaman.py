@@ -13,8 +13,6 @@ async def test_add_peminjaman_buku(client: AsyncClient, async_db: AsyncSession):
         alamat="semarang", 
         no_telp="081123123", 
         created_by="test user",
-        modify_at= None,
-        modify_by= None,
     )
 
     dummy_buku = Buku(
@@ -25,8 +23,6 @@ async def test_add_peminjaman_buku(client: AsyncClient, async_db: AsyncSession):
         genre= "test",
         qty=10,
         created_by= "test user",
-        modify_at= None,
-        modify_by= None,
     )
 
     async_db.add_all([dummy_member, dummy_buku])
@@ -40,8 +36,6 @@ async def test_add_peminjaman_buku(client: AsyncClient, async_db: AsyncSession):
         "tanggal_kembali": "2026-10-13T10:00:00Z",
         "created_at": "2026-10-06T10:00:00Z",
         "created_by": "test user",
-        "modify_at": None,
-        "modify_by": None,
         "details": [
             {"buku_id": 4, "qty": 2}
         ]
@@ -71,8 +65,6 @@ async def test_add_peminjaman_buku_stok_kurang_rollback(client: AsyncClient, asy
         alamat="semarang", 
         no_telp="081123123", 
         created_by="test user",
-        modify_at= None,
-        modify_by= None,
     )
 
     dummy_buku = Buku(
@@ -83,8 +75,6 @@ async def test_add_peminjaman_buku_stok_kurang_rollback(client: AsyncClient, asy
         genre= "test",
         qty=1,
         created_by= "test user",
-        modify_at= None,
-        modify_by= None,
     )
 
     async_db.add_all([dummy_member, dummy_buku])
@@ -98,8 +88,6 @@ async def test_add_peminjaman_buku_stok_kurang_rollback(client: AsyncClient, asy
         "tanggal_kembali": "2026-10-13T10:00:00",
         "created_at": "2026-10-06T10:00:00Z",
         "created_by": "test user",
-        "modify_at": None,
-        "modify_by": None,
         "details": [
             {"buku_id": 3, "qty": 3}
         ]
@@ -122,8 +110,6 @@ async def test_add_peminjaman_buku_tidak_ditemukan(client: AsyncClient, async_db
         alamat="semarang", 
         no_telp="081123123", 
         created_by="test user",
-        modify_at= None,
-        modify_by= None,
     )
 
     async_db.add(dummy_member)
@@ -137,8 +123,6 @@ async def test_add_peminjaman_buku_tidak_ditemukan(client: AsyncClient, async_db
         "tanggal_kembali": "2026-10-13T10:00:00",
         "created_at": "2026-10-06T10:00:00Z",
         "created_by": "test user",
-        "modify_at": None,
-        "modify_by": None,
         "details": [
             {"buku_id": 9999, "qty": 1}
         ]

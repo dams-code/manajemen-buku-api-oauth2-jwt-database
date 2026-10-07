@@ -4,14 +4,14 @@ import {hideListBuku} from "./pencarian.js";
 const tanggalPinjamBuku = document.getElementById("tanggalPinjamBuku");
 const tanggalKembali = document.getElementById("tanggalKembali");
 
-const convTanggalPinjamBuku = flatpickr(tanggalPinjamBuku, {
+export const convTanggalPinjamBuku = flatpickr(tanggalPinjamBuku, {
     dateFormat: "d-m-Y",
     defaultDate: new Date(),
     clickOpens: false,
     minDate: "today"
 });
 
-const convTanggalKembali = flatpickr(tanggalKembali, {
+export const convTanggalKembali = flatpickr(tanggalKembali, {
     dateFormat: "d-m-Y",
     defaultDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
 });
@@ -79,7 +79,8 @@ async function getDataBukuByID(data){
 
         prosesPinjamBukuId.removeAttribute("disabled");
 
-        htmlRows.setAttribute("data-id", data_buku.id);
+        // htmlRows.setAttribute("data-id", data_buku.id);
+        htmlRows.dataset.id = data_buku.id;
 
         htmlRows.innerHTML = `
             <td>
@@ -272,11 +273,15 @@ function batalBuatPeminjamanBuku(btn){
 
     const batalBuatPeminjamanBukuId = document.getElementById("batalBuatPeminjamanBukuId");
     const buatDetailPeminjamanBukuId = document.getElementById("buatDetailPeminjamanBukuId");
+    const prosesPinjamBukuId = document.getElementById("prosesPinjamBukuId");
+    const hapusListPinjamBukuId = document.getElementById("hapusListPinjamBukuId");
 
     const cariBuku = document.getElementById("cariBuku");
 
-    batalBuatPeminjamanBukuId.disabled = true;
-    buatDetailPeminjamanBukuId.disabled = false;
+    batalBuatPeminjamanBukuId.setAttribute("disabled", true);
+    buatDetailPeminjamanBukuId.disabled =  false;
+    prosesPinjamBukuId.setAttribute("disabled", true);
+    hapusListPinjamBukuId.style.display = "none";
 
     setTransisiBatalBuatDetail(cariTambahBuku);
     setTransisiBatalBuatDetail(daftarBuku);
@@ -292,55 +297,3 @@ function batalBuatPeminjamanBuku(btn){
 
 window.batalBuatPeminjamanBuku = batalBuatPeminjamanBuku;
 
-function setTanggalISO(){
-    const iso_tanggalPinjamBuku = convTanggalPinjamBuku.selectedDates[0];
-    const iso_tanggalKembali = convTanggalKembali.selectedDates[0];
-
-    if(iso_tanggalPinjamBuku && iso_tanggalKembali){
-        return {
-            tanggalPinjam: iso_tanggalPinjamBuku.toISOString(),
-            tanggalKembali: iso_tanggalKembali.toISOString(),
-        }
-    }
-
-    return null;
-}
-
-function prosesPinjamBuku(){
-
-    const tbody = document.getElementById("listPinjamBuku");
-    const listBuku = tbody.querySelectorAll("tr[data-id]");
-    const qty_pinjam = document.getElementById("totalPinjamBuku");
-    const member_id = document.getElementById("IDMemberInfo");
-
-    const userAktif = document.getElementById("userAktif");
-
-    const hasilGetListBuku = [];
-
-    const tanggalISO = setTanggalISO();
-
-    listBuku.forEach((data) => {
-        const idBuku = parseInt(data.dataset.id);
-
-        hasilGetListBuku.push({
-            buku_id: idBuku
-        });
-    });
-
-    const hasilProsesPinjamBuku = {
-        // no_pinjam: no_pinjam,
-        member_id: member_id,
-        qty_pinjam: qty_pinjam,
-        tanggal_pinjam: tanggalISO.tanggalPinjam,
-        tanggal_kembali: tanggalISO.tanggalKembali,
-        created_at: new Date(Date.now()).toISOString(),
-        created_by: userAktif.innerText,
-        details: hasilGetListBuku
-
-    }
-
-    console.log(hasilProsesPinjamBuku);
-
-}
-
-window.prosesPinjamBuku = prosesPinjamBuku;

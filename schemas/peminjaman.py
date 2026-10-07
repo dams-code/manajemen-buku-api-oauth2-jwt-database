@@ -34,15 +34,15 @@ class ResultDpeminjaman(BaseModel, Generic[T]):
 
 class HPeminjamanCreate(BaseModel):
     member_id: int
-    qty_pinjam: int
+    # qty_pinjam: int
     tanggal_pinjam: datetime
     tanggal_kembali: datetime | None
     status: str = "TERBUAT"
 
     created_at: datetime
     created_by: str
-    modify_at: datetime | None
-    modify_by: str | None
+    # modify_at: datetime | None
+    # modify_by: str | None
 
     details: List[DPeminjamanCreate]
 

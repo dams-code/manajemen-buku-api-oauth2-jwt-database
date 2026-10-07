@@ -32,7 +32,7 @@ function showAlertMember(data){
     }, 10);
 }
 
-function hideAlertMember(){
+export function hideAlertMember(){
     alertHasil.style.opacity = "0";
     alertHasil.style.transform = "translateY(-8px)";
 
@@ -221,11 +221,15 @@ cariBuku.addEventListener("input", async function(event){
                                 <h6 class="mb-1 text-truncate fw-bold text-dark">${item.judul}</h6>
                                 <p class="mb-0 text-muted small"><span style="width:100px;">Penulis</span>: ${item.penulis}</span></p>
                                 <p class="mb-0 text-muted small"><span style="width:100px;">Genre</span>: ${item.genre}</span></p>
-                                <p class="mb-0 text-muted small"><span style="width:100px;">Stok</span>:<span id="stokBuku" class="badge bg-success p-1 ms-2">${item.qty}</span></p>
+                                <p class="mb-0 text-muted small"><span style="width:100px;">Stok</span>:${parseInt(item.qty) > 0 ? `<span id="stokBuku" class="badge bg-success p-1 ms-2">${item.qty}</span>` : `<span id="stokBuku" class="badge bg-danger p-1 ms-2">${item.qty}</span>`}</p>
                             </div>
-                            <button class="btn btn-sm btn-primary rounded-circle ms-2" data-id="${item.id}" title="Tambah ke transaksi peminjaman" onclick="getDataBukuByID(this);">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
+                            ${parseInt(item.qty) > 0 ? `
+                                    <button class="btn btn-sm btn-primary rounded-circle ms-2" data-id="${item.id}" title="Tambah ke transaksi peminjaman" onclick="getDataBukuByID(this);">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                ` : ``
+                            }
+                            
                         </div>
                     </div>
 
