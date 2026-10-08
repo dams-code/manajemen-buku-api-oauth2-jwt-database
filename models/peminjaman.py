@@ -49,6 +49,10 @@ class HPeminjaman(Base, TimestampPeminjaman):
 
     member_ref: Mapped["Member"] = relationship("Member", back_populates="hpeminjaman_ref", lazy="joined")
 
+    @property
+    def nama_member(self) -> str | None:
+        return self.member_ref.nama if self.member_ref else  None
+
 class DPeminjaman(Base, TimestampPeminjaman):
 
     __tablename__ = "dpeminjaman"

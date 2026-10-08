@@ -59,8 +59,8 @@ async function getMember(){
                     </td>
                     ${admin ? `
                         <td class="d-flex gap-3 justify-content-center">
-                            <button class="btn btn-primary d-flex col-gap-3" type="button" data-bs-toggle="modal" data-bs-target="#modalmember" data-id=${item.id} onclick="getDataMemberID(this);"><i class="bi bi-pencil"></i> Update</button>
-                            <button class="btn btn-outline-danger d-flex col-gap-3" data-id=${item.id} data-nama=${item.nama} type="button" onclick="hapusMember(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
+                            <button class="btn btn-primary d-flex" style="gap: 0.3rem !important;" type="button" data-bs-toggle="modal" data-bs-target="#modalmember" data-id=${item.id} onclick="getDataMemberID(this);"><i class="bi bi-pencil"></i> Update</button>
+                            <button class="btn btn-outline-danger d-flex" style="gap: 0.3rem !important;" data-id=${item.id} data-nama=${item.nama} type="button" onclick="hapusMember(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
                         </td>` : `<td class="align-middle"><span>&nbsp;</span></td>`
                     }
                     

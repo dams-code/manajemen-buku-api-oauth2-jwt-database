@@ -22,7 +22,7 @@ async function getBuku(){
 
     if (!hasil.data || hasil.data.length === 0){
         
-        console.log(hasil_user.data_user.role_ref.roledesc);
+        // console.log(hasil_user.data_user.role_ref.roledesc);
 
         if (hasil_user.data_user.role === "manajer"){
             btnTambahBuku.style.display = "none";
@@ -66,8 +66,8 @@ async function getBuku(){
                     </td>
                     ${!cekManajer ? `
                         <td class="d-flex gap-3 justify-content-center">
-                            <button class="btn btn-primary d-flex col-gap-3" type="button" data-bs-toggle="modal" data-bs-target="#modalbuku" data-id=${item.id} onclick="getDataBukuID(this);"><i class="bi bi-pencil"></i> Update</button>
-                            <button class="btn btn-outline-danger d-flex col-gap-3" data-id=${item.id} type="button" onclick="hapusBuku(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
+                            <button class="btn btn-primary d-flex" style="gap: 0.3rem !important;" type="button" data-bs-toggle="modal" data-bs-target="#modalbuku" data-id=${item.id} onclick="getDataBukuID(this);"><i class="bi bi-pencil"></i> Update</button>
+                            <button class="btn btn-outline-danger d-flex" style="gap: 0.3rem !important;" data-id=${item.id} type="button" onclick="hapusBuku(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
                         </td>` : `<td class="align-middle"><span>&nbsp;</span></td>`
                     }
                     

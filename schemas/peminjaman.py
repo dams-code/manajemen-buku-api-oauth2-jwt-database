@@ -48,6 +48,9 @@ class HPeminjamanCreate(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class HPeminjamanUpdate(BaseModel):
+    status: StatusPinjam
+
 class HPeminjamanResponse(BaseModel):
     id: int
     member_id: int
@@ -65,6 +68,24 @@ class HPeminjamanResponse(BaseModel):
     nama_member: str | None
     details: list[DPeminjamanResponse] = []
     
+    model_config = ConfigDict(from_attributes=True)
+
+class HPeminjamanResponseNonDetail(BaseModel):
+    id: int
+    member_id: int
+    no_pinjam: str
+    qty_pinjam: int
+    tanggal_pinjam: datetime
+    tanggal_kembali: datetime | None
+    status: StatusPinjam
+
+    created_at: datetime
+    created_by: str
+    modify_at: datetime | None
+    modify_by: str | None
+
+    nama_member: str | None
+
     model_config = ConfigDict(from_attributes=True)
 
 class ResultHpeminjaman(BaseModel, Generic[T]):

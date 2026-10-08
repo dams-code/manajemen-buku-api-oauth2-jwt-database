@@ -42,8 +42,8 @@ async function getUser(){
                         <td class="align-middle">${user.role_ref.roledesc}</td>
                         ${cekManajer ? `
                             <td class="d-flex gap-3 justify-content-center">
-                                <button class="btn btn-primary d-flex col-gap-3" type="button" data-bs-toggle="modal" data-bs-target="#modaluser" data-username=${user.username} data-id=${user.id} onclick="getDataUserID(this);"><i class="bi bi-pencil"></i> Update</button>
-                                <button class="btn btn-outline-danger d-flex col-gap-3" data-username=${user.username} type="button" onclick="hapusUser(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
+                                <button class="btn btn-primary d-flex" style="gap: 0.3rem !important;" type="button" data-bs-toggle="modal" data-bs-target="#modaluser" data-username=${user.username} data-id=${user.id} onclick="getDataUserID(this);"><i class="bi bi-pencil"></i> Update</button>
+                                <button class="btn btn-outline-danger d-flex" style="gap: 0.3rem !important;" data-username=${user.username} type="button" onclick="hapusUser(this);"><i class="bi bi-trash-fill"></i> Hapus</button>
                             </td>
                         ` : `<td class="align-middle"><span>&nbsp;</span></td>`}
                     </tr>
@@ -194,6 +194,8 @@ async function simpan_user(){
     }
 }
 
+window.simpan_user = simpan_user;
+
 function setTambahUser(){
     document.getElementById("modalJudul").innerText = "Tambah User";
 
@@ -206,6 +208,8 @@ function setTambahUser(){
     document.getElementById("password").value = "";
     document.getElementById("list_role").value = "";
 }
+
+window.setTambahUser = setTambahUser;
 
 async function getDataUserID(data){
     const getIdUsername = data.dataset.id;
@@ -265,6 +269,8 @@ async function getDataUserID(data){
     }
 }
 
+window.getDataUserID = getDataUserID;
+
 
 async function hapusUser(data){
 
@@ -313,6 +319,6 @@ async function hapusUser(data){
         }
     }
 
-    
-
 }
+
+window.hapusUser = hapusUser;
