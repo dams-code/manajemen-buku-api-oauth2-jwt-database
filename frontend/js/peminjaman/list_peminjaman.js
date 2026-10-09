@@ -102,6 +102,7 @@ async function getListPeminjamanID(data){
     const tanggalPinjam = document.getElementById("tanggalPinjam");
     const tanggalKembali = document.getElementById("tanggalKembali");
     const userPembuat = document.getElementById("userPembuat");
+    const tbody = document.getElementById("tbodyBukuPinjam");
 
     if(id){
 
@@ -120,6 +121,14 @@ async function getListPeminjamanID(data){
                     text: `Load peminjaman buku id ${id}`
                 });
 
+                tbody.innerHTML = `
+                    <tr id="rowKosong">
+                        <td colspan="4" class="text-center text-muted py-4 small">
+                            Detail daftar buku yang dipinjam kosong
+                        </td>
+                    </tr>
+                `;
+                
                 throw new error(`HTTP error! status: ${hasil.status}`)
             }
 
@@ -132,11 +141,34 @@ async function getListPeminjamanID(data){
                 month: "long",
                 year: "numeric",
             });
+
             tanggalKembali.value = new Date(hasil.data.tanggal_kembali).toLocaleDateString("id-ID", {
                 day: "2-digit",
                 month: "long",
                 year: "numeric",
             });
+
+            const htmlRows = hasil.data.details.map((item, index) => `
+                <tr>
+                    <td class="align-middle">
+                        ${index + 1}
+                    </td>
+                    <td class="align-middle">
+                        ${item.judul}
+                    </td>
+                    <td class="align-middle">
+                        ${item.judul}
+                    </td>
+                    <td class="align-middle">
+                        ${item.judul}
+                    </td>
+                    <td class="align-middle">
+                        ${item.qty}
+                    </td>
+                </tr>
+            `).join("");
+
+            tbody.innerHTML = htmlRows;
 
             const span = document.createElement("span");
 
@@ -162,13 +194,21 @@ async function getListPeminjamanID(data){
             return hasil
 
         } catch(error){
-            console.error("Gagal mengambil data peminjaman buku: ", error)
+            console.error("Gagal mengambil data peminjaman buku: ", error);
 
             Swal.fire({
                 icon:"error",
                 title:"Load data buku gagal",
                 text: `data peminjaman buku id ${id} tidak dapat di-load, ${error}`
             });
+
+            tbody.innerHTML = `
+                <tr id="rowKosong">
+                    <td colspan="4" class="text-center text-muted py-4 small">
+                        Detail daftar buku yang dipinjam kosong
+                    </td>
+                </tr>
+            `;
         }
     }
 
@@ -182,22 +222,55 @@ async function simpan_pengembalian_buku(){
     const id = document.getElementById("id").value;
     const getNoPinjam = document.getElementById("noPinjam").value;
 
-    const noPinjam = new URLSearchParams({"no_pinjam": getNoPinjam}).toString();
+    if(id && getNoPinjam){
 
-    const response = await cek_auth_token(`/peminjaman/${id}?${noPinjam}`, {
-        method: "PUT"
-    });
+        const noPinjam = new URLSearchParams({"no_pinjam": getNoPinjam}).toString();
 
-    if(!response) return;
+        try{
+            const response = await cek_auth_token(`/pengembalian/${id}?${noPinjam}`, {
+                method: "PUT"
+            });
 
-    if(!response.ok){
-        Swal.fire({
-            icon: "error",
-            title: "Gagal",
-            text: `Proses Pengembalian Buku ${noPinjam} gagal diproses`,
-            timer: 1500,
-            showConfirmButton: false
-        });
+            if(!response) return;
+
+            if(!response.ok){
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: `Proses Pengembalian Buku ${noPinjam} gagal diproses`,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                
+                throw new Error(`Proses Pengembalian Buku ${noPinjam} gagal diproses`)
+            }
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Update Status Pengembalian Buku Sukses',
+                text: `Data buku Id ${id} berhasil terhapus`,
+                timer: 1300,
+                showConfirmButton: false
+            });
+
+            const elementModal = document.getElementById("modalpeminjaman");
+            const modalInstance = bootstrap.Modal.getInstance(elementModal);
+
+            if(modalInstance){
+                modalInstance.hide();
+            }
+
+            await getListPeminjamanBuku();
+
+        } catch(error){
+            console.error(error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: `Proses Pengembalian Buku ${noPinjam} gagal diproses, err: ${error.message}`,
+            });
+        }
     }
 
 

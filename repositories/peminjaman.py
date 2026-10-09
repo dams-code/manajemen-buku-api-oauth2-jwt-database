@@ -1,6 +1,3 @@
-from schemas.peminjaman import HPeminjamanResponse
-from schemas.peminjaman import ResultHpeminjaman
-from models.peminjaman import HPeminjaman
 from models.member import Member
 from datetime import datetime
 from schemas.peminjaman import *
@@ -15,7 +12,7 @@ from fastapi import Depends, status, HTTPException
 
 async def result_get_hpeminjaman(no_pinjam: str, sesi_db: AsyncSession = Depends(get_database))-> ResultHpeminjaman[list[HPeminjamanResponseNonDetail]]:
 
-    query = select(HPeminjaman)
+    query = select(HPeminjaman).where(HPeminjaman.status == StatusPinjam.TERBUAT)
 
     if no_pinjam is not None:
         query = query.where(HPeminjaman.no_pinjam.ilike(f"%{no_pinjam}%"))
