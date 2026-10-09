@@ -175,3 +175,32 @@ async function getListPeminjamanID(data){
 }
 
 window.getListPeminjamanID = getListPeminjamanID;
+
+
+async function simpan_pengembalian_buku(){
+
+    const id = document.getElementById("id").value;
+    const getNoPinjam = document.getElementById("noPinjam").value;
+
+    const noPinjam = new URLSearchParams({"no_pinjam": getNoPinjam}).toString();
+
+    const response = await cek_auth_token(`/peminjaman/${id}?${noPinjam}`, {
+        method: "PUT"
+    });
+
+    if(!response) return;
+
+    if(!response.ok){
+        Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: `Proses Pengembalian Buku ${noPinjam} gagal diproses`,
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+
+
+}
+
+window.simpan_pengembalian_buku = simpan_pengembalian_buku;

@@ -26,8 +26,10 @@ async function getBuku(){
 
         if (hasil_user.data_user.role === "manajer"){
             btnTambahBuku.style.display = "none";
+
         } else {
             btnTambahBuku.style.display = "inline-block";
+
         }
 
         htmlRowsKosong = `
@@ -38,6 +40,7 @@ async function getBuku(){
         tbody.innerHTML = htmlRowsKosong
 
         return;
+        
     } else {
 
         if (cekManajer){
