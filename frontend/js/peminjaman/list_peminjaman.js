@@ -111,8 +111,6 @@ async function getListPeminjamanID(data){
 
             if(!response) return;
 
-            const hasil = await response.json();
-
             if(!response.ok){
 
                 Swal.fire({
@@ -131,6 +129,8 @@ async function getListPeminjamanID(data){
                 
                 throw new error(`HTTP error! status: ${hasil.status}`)
             }
+
+            const hasil = await response.json();
 
             idPinjam.value = id;
             noPinjam.value = hasil.data.no_pinjam;
