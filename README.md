@@ -52,7 +52,8 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
  - ✅ Membuat Model Peminjaman pada manajemen buku
  - ✅ Membuat Layout peminjaman, dan schemas peminjaman.
  - ✅ Perbaikan pada endpoint Get `/member` pada query parameter dan pengambilan data.
- - ⬜️ Membuat endpoint peminjaman POST (header, detail).
+ - ✅ Membuat endpoint peminjaman POST (header, detail).
+ - ✅ Membuat endpoint pengembalian PUT (header, detail), dan GET hasil.
 
 ### Perbedaan schemas/buku dari list dan sesudah migrasi ke database.
 ---
