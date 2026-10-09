@@ -141,7 +141,7 @@ async def result_add_Hpinjam(hpeminjaman: HPeminjamanCreate, username_aktif: str
 
         cek_hasil_header_pinjam = result.scalar_one()
 
-        cek_hasil_header_pinjam.nama_member = getMember_id.nama
+        # cek_hasil_header_pinjam.nama_member = getMember_id.nama
 
         return ResultHpeminjaman[HPeminjamanResponse](
             status=status.HTTP_201_CREATED,
