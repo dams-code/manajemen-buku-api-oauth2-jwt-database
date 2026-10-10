@@ -304,7 +304,7 @@ async function batal_peminjaman_buku(){
 
         const noPinjam = new URLSearchParams({"no_pinjam": getNoPinjam}).toString();
 
-        const konfirmPengembalian = await Swal.fire({
+        const konfirmPembatalan = await Swal.fire({
             title: `Yakin ingin membatalkan peminjaman buku dengan No Pinjam ${getNoPinjam} ?`,
             text: `No Pinjam Buku ${getNoPinjam} akan dibatalkan`,
             icon: "warning",
@@ -315,7 +315,7 @@ async function batal_peminjaman_buku(){
             cancelButtonText: 'Tidak'
         });
 
-        if(konfirmPengembalian.isConfirmed){
+        if(konfirmPembatalan.isConfirmed){
             
             try{
                 const response = await cek_auth_token(`/pembatalan/${id}?${noPinjam}`, {

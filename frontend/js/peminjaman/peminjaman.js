@@ -60,13 +60,26 @@ async function prosesPinjamBuku(){
         if(!response) return;
 
         if(response.ok){
-            await Swal.fire({
+
+            const result = await response.json();
+
+            const notifProsesPinjaman = await Swal.fire({
                 icon: "success",
                 title: "Berhasil",
                 text: "Proses Peminjaman Buku berhasil",
-                timer: 1500,
-                showConfirmButton: false            
+                // timer: 1500,
+                // showConfirmButton: false
+                showCancelButton: true,
+                confirmButtonText: '<i class="bi bi-printer"></i> Cetak Struk',
+                cancelButtonText: 'Selesai',
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                allowOutsideClick: false            
             });
+
+            if(notifProsesPinjaman.isConfirmed){
+                cetakStrukPeminjamanBuku(result.data);
+            }
 
             resetTampilanPeminjaman();
 
@@ -93,6 +106,108 @@ async function prosesPinjamBuku(){
         });
     }
 
+}
+
+function cetakStrukPeminjamanBuku(data){
+    const printWindow = window.open('', '_blank', 'width: 600, height: 600');
+
+    const htmlData = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Struk Peminjaman - ${data.no_pinjam}</title>
+            <style>
+                body {
+                    font-family: 'Courier New', Courier, monospace;
+                    font-size: 12px;
+                    width: 300px; /* Lebar kertas */
+                    margin: 0 auto;
+                    padding: 10px;
+                }
+                .text-center { text-align: center; }
+                .fw-bold { font-weight: bold; }
+                .line { border-bottom: 1px dashed #000; margin: 10px 0; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { font-size: 11px; text-align: left; padding: 3px 0; }
+                .right { text-align: right; }
+            </style>
+        </head>
+        <body>
+            <div class="text-center">
+                <span class="fw-bold">Manajemen Buku</span><br>
+                <div class="line"></div>
+            </div>
+
+            <div>
+                <span>No. Pinjam : ${data.no_pinjam}</span><br>
+                <span>Tanggal Pinjam  : ${new Date(data.tanggal_pinjam).toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                })}</span><br>
+                <span>Tanggal Kembali : ${new Date(data.tanggal_kembali).toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                })}</span><br>
+                <span>Peminjam : ${data.nama_member || '-'}</span><br>
+                <span>Petugas  : ${data.created_by}</span>
+            </div>
+
+            <div class="line"></div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Buku</th>
+                        <th class="right">Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.details.map(item => `
+                        <tr>
+                            <td>${item.buku ? item.buku.judul : 'Buku ID: ' + item.buku_id}</td>
+                            <td class="right">${item.qty}</td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+            <div class="line"></div>
+            
+            <div>
+                Total buku yang dipinjam : ${
+                    data.details.reduce((n, {qty}) => n + qty, 0)
+                } <br>
+                Dicetak tanggal : ${new Date().toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                    }).replace("pukul", " - ")
+                }
+            </div>
+
+            <div class="line"></div>
+
+            <div class="text-center" style="margin-top: 15px;">
+                <span>Terima Kasih!</span><br>
+                <span>Harap kembalikan buku tepat waktu.</span>
+            </div>
+        </body>
+        </html>
+    `
+
+    printWindow.document.write(htmlData);
+    printWindow.document.close();
+
+    printWindow.focus();
+
+    setTimeout(() => {
+        printWindow.print();
+    }, 500);
 }
 
 function setTransisiBatalBuatDetail(id){
