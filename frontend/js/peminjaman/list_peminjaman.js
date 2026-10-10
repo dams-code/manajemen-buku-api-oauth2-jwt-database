@@ -12,6 +12,14 @@ async function getListPeminjamanBuku(){
 
     if(!hasil.data || hasil.data.length == 0){
 
+        Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: `Load Daftar peminjaman Buku gagal, Data tidak ada`,
+            timer: 1500,
+            showConfirmButton: false
+        });
+
         htmlRowsKosong = `
             <tr>
                 <td colspan="5" class="text-center">Belum ada list peminjaman buku.</td>
@@ -216,7 +224,6 @@ async function getListPeminjamanID(data){
 
 window.getListPeminjamanID = getListPeminjamanID;
 
-
 async function simpan_pengembalian_buku(){
 
     const id = document.getElementById("id").value;
@@ -226,54 +233,139 @@ async function simpan_pengembalian_buku(){
 
         const noPinjam = new URLSearchParams({"no_pinjam": getNoPinjam}).toString();
 
-        try{
-            const response = await cek_auth_token(`/pengembalian/${id}?${noPinjam}`, {
-                method: "PUT"
-            });
+        const konfirmPengembalian = await Swal.fire({
+            title: `Yakin ingin mengembalikan No Pinjam Buku ${getNoPinjam} ?`,
+            text: `No Pinjam Buku ${getNoPinjam} akan dikembalikan`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        });
 
-            if(!response) return;
+        if(konfirmPengembalian.isConfirmed){
+            try{
+                const response = await cek_auth_token(`/pengembalian/${id}?${noPinjam}`, {
+                    method: "PUT"
+                });
 
-            if(!response.ok){
+                if(!response) return;
+
+                if(!response.ok){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: `Proses Pengembalian Buku ${noPinjam} gagal diproses`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    throw new Error(`Proses Pengembalian Buku ${noPinjam} gagal diproses`)
+                }
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Update Status Pengembalian Buku Sukses',
+                    text: `No Pinjam buku ${noPinjam} berhasil dikembalikan`,
+                    timer: 1300,
+                    showConfirmButton: false
+                });
+
+                const elementModal = document.getElementById("modalpeminjaman");
+                const modalInstance = bootstrap.Modal.getInstance(elementModal);
+
+                if(modalInstance){
+                    modalInstance.hide();
+                }
+
+                await getListPeminjamanBuku();
+
+            } catch(error){
+                console.error(error);
+
                 Swal.fire({
                     icon: "error",
                     title: "Gagal",
-                    text: `Proses Pengembalian Buku ${noPinjam} gagal diproses`,
-                    timer: 1500,
-                    showConfirmButton: false
+                    text: `Proses Pengembalian Buku ${noPinjam} gagal diproses, err: ${error.message}`,
                 });
-                
-                throw new Error(`Proses Pengembalian Buku ${noPinjam} gagal diproses`)
             }
-
-            await Swal.fire({
-                icon: 'success',
-                title: 'Update Status Pengembalian Buku Sukses',
-                text: `Data buku Id ${id} berhasil terhapus`,
-                timer: 1300,
-                showConfirmButton: false
-            });
-
-            const elementModal = document.getElementById("modalpeminjaman");
-            const modalInstance = bootstrap.Modal.getInstance(elementModal);
-
-            if(modalInstance){
-                modalInstance.hide();
-            }
-
-            await getListPeminjamanBuku();
-
-        } catch(error){
-            console.error(error);
-
-            Swal.fire({
-                icon: "error",
-                title: "Gagal",
-                text: `Proses Pengembalian Buku ${noPinjam} gagal diproses, err: ${error.message}`,
-            });
         }
     }
-
-
 }
 
 window.simpan_pengembalian_buku = simpan_pengembalian_buku;
+
+async function batal_peminjaman_buku(){
+    const id = document.getElementById("id").value;
+    const getNoPinjam = document.getElementById("noPinjam").value;
+
+    if(id && getNoPinjam){
+
+        const noPinjam = new URLSearchParams({"no_pinjam": getNoPinjam}).toString();
+
+        const konfirmPengembalian = await Swal.fire({
+            title: `Yakin ingin membatalkan peminjaman buku dengan No Pinjam ${getNoPinjam} ?`,
+            text: `No Pinjam Buku ${getNoPinjam} akan dibatalkan`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Tidak'
+        });
+
+        if(konfirmPengembalian.isConfirmed){
+            
+            try{
+                const response = await cek_auth_token(`/pembatalan/${id}?${noPinjam}`, {
+                    method: "PUT"
+                });
+
+                if(!response) return;
+
+                if(!response.ok){
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: `Proses Batal Peminjaman Buku ${noPinjam} gagal diproses`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    throw new Error(`Proses pembatalan peminjaman Buku ${noPinjam} gagal diproses`)
+                }
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Update Status Batal Peminjaman Buku Sukses',
+                    text: `No Pinjam buku ${noPinjam} berhasil dibatalkan peminjamannya`,
+                    timer: 1300,
+                    showConfirmButton: false
+                });
+
+                const elementModal = document.getElementById("modalpeminjaman");
+                const modalInstance = bootstrap.Modal.getInstance(elementModal);
+
+                if(modalInstance){
+                    modalInstance.hide();
+                }
+
+                await getListPeminjamanBuku();
+
+            } catch(error){
+                console.error(error);
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: `Proses Batal Peminjaman Buku ${noPinjam} gagal diproses, err: ${error.message}`,
+                });
+            }
+        }
+    }
+}
+
+window.batal_peminjaman_buku = batal_peminjaman_buku;
+

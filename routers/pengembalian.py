@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.peminjaman import ResultDpeminjaman, HPeminjamanResponse
+from schemas.peminjaman import ResultHpeminjaman, HPeminjamanResponse
 from schemas.roles import Roles
 from typing import Annotated
 from repositories.roles import CekRole
@@ -11,11 +11,11 @@ from repositories.pengembalian import result_pengembalian_buku, result_get_penge
 
 router_pengembalian = APIRouter(prefix="/pengembalian", tags=["Pengembalian"])
 
-@router_pengembalian.put("/{id}", response_model=ResultDpeminjaman[HPeminjamanResponse])
+@router_pengembalian.put("/{id}", response_model=ResultHpeminjaman[HPeminjamanResponse])
 async def pengembalian_buku(id: int, no_pinjam: Annotated[str, Query(max_length=14)], username_aktif: str = Depends(CekRole([Roles.ADMIN])), sesi_db: AsyncSession = Depends(get_database)):
     return await result_pengembalian_buku(id, no_pinjam, username_aktif, sesi_db)
 
-@router_pengembalian.get("", response_model=ResultDpeminjaman[list[HPeminjamanResponse]])
-async def get_pengembalian_buku(no_pinjam: Annotated[str, Query()] = None, nama_member: Annotated[str, Query()] = None, sesi_db: AsyncSession = Depends(get_database)):
+@router_pengembalian.get("", response_model=ResultHpeminjaman[list[HPeminjamanResponse]])
+async def get_pengembalian_buku(no_pinjam: Annotated[str, Query(max_length=14)] = None, nama_member: Annotated[str, Query()] = None, sesi_db: AsyncSession = Depends(get_database)):
     
     return await result_get_pengembalian_buku(no_pinjam, nama_member, sesi_db)

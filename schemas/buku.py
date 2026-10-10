@@ -23,10 +23,9 @@ class BukuCreate(BaseModel):
     judul: str
     penulis: str
     tahun: int
-    qty: int
+    qty: int | None = 0
     genre: str
     tersedia: bool = True
-    qty: int | None = 0
 
 class BukuUpdate(BaseModel):
     judul: str | None
@@ -35,7 +34,6 @@ class BukuUpdate(BaseModel):
     qty: int | None
     genre: str | None
     tersedia: bool | None
-    qty: int | None
 
 # class Buku(BaseModel):
 #     judul: str

@@ -1,12 +1,12 @@
 import {cek_auth_token} from '../token/cek_token.js'
 
-async function getPengembalianBuku(){
-    
-    const response = await cek_auth_token("/pengembalian");
+async function getPembatalanBuku(){
+
+    const tbody = document.getElementById("dataListPembatalanBuku");
+
+    const response = await cek_auth_token("/pembatalan")
 
     if(!response) return;
-
-    const tbody = document.getElementById("dataListPengembalianBuku");
 
     const hasil = await response.json();
 
@@ -15,26 +15,25 @@ async function getPengembalianBuku(){
         Swal.fire({
             icon: "error",
             title: "Gagal",
-            text: `Load Daftar pengembalian Buku gagal, Data tidak ada`,
+            text: `Load Daftar Pembatalan Buku gagal, Data tidak ada`,
             timer: 1500,
             showConfirmButton: false
         });
-
+        
         const RowsKosong = `
             <tr id="RowsKosong">
                 <td colspan="8" class="text-center text-muted py-3">
-                    Belum ada data pengembalian peminjaman buku
+                    Belum ada data pembatalan peminjaman buku
                 </td>
             </tr>
         `
 
         tbody.innerHTML = RowsKosong;
-        
+
         return;
     }
-    
-    try{
 
+    try{
         const htmlRows = hasil.data.map((item, index) => `
             <tr>
                 <td class="align-middle">${index + 1}</td>
@@ -55,7 +54,7 @@ async function getPengembalianBuku(){
                         year: "numeric"
                     })
                 }</td>
-                <td class="align-middle"><span class="badge text-bg-primary p-2">${item.status}</span></td>
+                <td class="align-middle"><span class="badge text-bg-danger p-2">${item.status}</span></td>
                 <td class="align-middle">${
                     new Date(item.modify_at).toLocaleDateString("id-ID", {
                         day: "2-digit",
@@ -76,31 +75,31 @@ async function getPengembalianBuku(){
         Swal.fire({
             icon: "success",
             title: "Berhasil",
-            text: "List pengembalian buku berhasil ter-load ke table",
+            text: "List pembatalan buku berhasil ter-load ke table",
             timer: 1500,
             showConfirmButton: false
         });
 
     } catch(error){
 
-        console.error(error);
-
         const RowsKosong = `
             <tr id="RowsKosong">
                 <td colspan="8" class="text-center text-muted py-3">
-                    Belum ada data pengembalian peminjaman buku
+                    Belum ada data pembatalan peminjaman buku
                 </td>
             </tr>
         `
 
         tbody.innerHTML = RowsKosong;
 
+        console.error(error);
+
         Swal.fire({
             icon: "error",
             title: "Gagal",
-            text: `Load Daftar Pengembalian Buku gagal, err: ${error.message}`,
+            text: `Load Daftar pembatalan Buku gagal, err: ${error.message}`,
         });
     }
 }
 
-getPengembalianBuku();
+getPembatalanBuku();

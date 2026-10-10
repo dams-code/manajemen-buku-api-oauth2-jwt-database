@@ -23,6 +23,10 @@ async def result_pengembalian_buku(id: int, no_pinjam: str, username_aktif: str,
             detail=f"Data Peminjaman buku, Id {id} dengan No Pinjam {no_pinjam} tidak ditemukan"
         )
 
+    for detail in result_data_pengembalian_buku.details:
+        if detail.buku:
+            detail.buku.qty += detail.qty
+
     result_data_pengembalian_buku.status = StatusPinjam.KEMBALI
     result_data_pengembalian_buku.tanggal_kembali = datetime.now()
     result_data_pengembalian_buku.modify_at = datetime.now()
@@ -53,7 +57,6 @@ async def result_get_pengembalian_buku(no_pinjam: str, nama_member: str, sesi_db
         query = query.where(
             or_(*conditions)
         )
-
     
     result = await sesi_db.execute(query)
 

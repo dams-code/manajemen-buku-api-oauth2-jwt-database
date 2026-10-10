@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Request, HTTPException, status
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import JSONResponse
 from routers.buku import router_buku
 from routers.user import router_user
 from routers.member import router_member
 from routers.peminjaman import router_peminjaman
 from routers.pengembalian import router_pengembalian
+from routers.pembatalan import router_pembatalan
 
 from fastapi.staticfiles import StaticFiles
 
@@ -34,6 +35,7 @@ app.include_router(router_buku)
 app.include_router(router_member)
 app.include_router(router_peminjaman)
 app.include_router(router_pengembalian)
+app.include_router(router_pembatalan)
 
 origins = [
     "http://127.0.0.1:8000",
