@@ -72,7 +72,7 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT + Menggunakan d
 | :---: |
 | <div style="padding:10px;"><img src="frontend/dokumentasi/skema-table-manajemen-buku.png" width="100%" height="480px" style="object-fit: cover;"> |
 
-Berikut adalah pemetaan relasi dan struktur tabel untuk sistem perpustakaan:
+Berikut adalah pemetaan relasi dan struktur tabel untuk manajemen buku (perpustakaan mini):
 
 | Nama Tabel | Kolom Utama | Tipe Data | Constraint |
 | :--- | :--- | :--- | :--- |
