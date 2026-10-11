@@ -26,6 +26,7 @@ async def RoleSeed():
                     role_baru = Role(roledesc= nama_role)
                     sesi_db.add(role_baru)
                     print(f"Role {nama_role} berhasil ditambahkan ke table role")
+                
                 else:
                     print(f"Role {nama_role} sudah ada di table role.")
 
@@ -33,8 +34,12 @@ async def RoleSeed():
 
             print("Seed data role ke table role selesai.")
         except Exception as err:
+
             await sesi_db.rollback()
             print(f"Proses seed data role error, {err}")
+
+        finally:
+            await sesi_db.close()
 
 if __name__ == "__main__":
     asyncio.run(RoleSeed())

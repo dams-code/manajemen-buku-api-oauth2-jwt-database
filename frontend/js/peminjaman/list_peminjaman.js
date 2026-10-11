@@ -20,9 +20,9 @@ async function getListPeminjamanBuku(){
             showConfirmButton: false
         });
 
-        htmlRowsKosong = `
+        const htmlRowsKosong = `
             <tr>
-                <td colspan="5" class="text-center">Belum ada list peminjaman buku.</td>
+                <td colspan="9" class="text-center">Belum ada list peminjaman buku.</td>
             </tr>
         `
         tbody.innerHTML = htmlRowsKosong;
@@ -32,44 +32,85 @@ async function getListPeminjamanBuku(){
     } else {
 
         try{
+            const user = await cek_auth_token(`/user/aktif`);
+            const hasil_user = await user.json();
+
+            const cekManajer = hasil_user.data_user.role_ref.roledesc === "manajer";
 
             const hasilListPeminjamanBuku = hasil.data.map((item, index) => `
-                <tr>
-                    <td class="align-middle">${index + 1}</td>
-                    <td class="align-middle text-start">${item.no_pinjam}</td>
-                    <td class="align-middle text-center">${item.qty_pinjam}</td>
-                    <td class="align-middle text-start">${item.nama_member}</td>
-                    <td class="align-middle">${
-                        new Date(item.tanggal_pinjam).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric"
-                        })
-                    }</td>
-                    <td class="align-middle">${
-                        new Date(item.tanggal_kembali).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric"
-                        })
-                    }</td>
-                    <td class="align-middle"><span class="badge text-bg-success p-2">${item.status}</span></td>
-                    <td class="align-middle">${
-                        new Date(item.created_at).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                            hour12: false
-                        }).replace("pukul", "-").trim()
+                ${cekManajer ? `
+                    <tr>
+                        <td class="align-middle">${index + 1}</td>
+                        <td class="align-middle text-start">${item.no_pinjam}</td>
+                        <td class="align-middle text-center">${item.qty_pinjam}</td>
+                        <td class="align-middle text-start">${item.nama_member}</td>
+                        <td class="align-middle">${
+                            new Date(item.tanggal_pinjam).toLocaleDateString("id-ID", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric"
+                            })
+                        }</td>
+                        <td class="align-middle">${
+                            new Date(item.tanggal_kembali).toLocaleDateString("id-ID", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric"
+                            })
+                        }</td>
+                        <td class="align-middle"><span class="badge text-bg-success p-2">${item.status}</span></td>
+                        <td class="align-middle">${
+                            new Date(item.created_at).toLocaleDateString("id-ID", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: false
+                            }).replace("pukul", "-").trim()
 
-                    } <br/> User: ${item.created_by}</td>
-                    <td class="align-middle text-center">
-                        <button type="button" class="btn btn-info d-flex" style="gap: 0.3rem !important;" data-bs-toggle="modal" data-bs-target="#modalpeminjaman" data-id="${item.id}" onclick="getListPeminjamanID(this)"><i class="bi bi-eye-fill"></i>Detail</button>
-                    </td>
-                </tr>
+                        } <br/> User: ${item.created_by}</td>
+                        <td class="align-middle text-center">&nbsp;</td>
+                    </tr> `
+                    : `<tr>
+                        <td class="align-middle">${index + 1}</td>
+                        <td class="align-middle text-start">${item.no_pinjam}</td>
+                        <td class="align-middle text-center">${item.qty_pinjam}</td>
+                        <td class="align-middle text-start">${item.nama_member}</td>
+                        <td class="align-middle">${
+                            new Date(item.tanggal_pinjam).toLocaleDateString("id-ID", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric"
+                            })
+                        }</td>
+                        <td class="align-middle">${
+                            new Date(item.tanggal_kembali).toLocaleDateString("id-ID", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric"
+                            })
+                        }</td>
+                        <td class="align-middle"><span class="badge text-bg-success p-2">${item.status}</span></td>
+                        <td class="align-middle">${
+                            new Date(item.created_at).toLocaleDateString("id-ID", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: false
+                            }).replace("pukul", "-").trim()
+
+                        } <br/> User: ${item.created_by}</td>
+                        <td class="align-middle text-center">
+                            <button type="button" class="btn btn-info d-flex" style="gap: 0.3rem !important;" data-bs-toggle="modal" data-bs-target="#modalpeminjaman" data-id="${item.id}" onclick="getListPeminjamanID(this)"><i class="bi bi-eye-fill"></i>Detail</button>
+                        </td>
+                    </tr>`
+                }
+                
             `).join("");
 
             tbody.innerHTML = hasilListPeminjamanBuku;
@@ -91,6 +132,13 @@ async function getListPeminjamanBuku(){
                 title: "Gagal",
                 text: `list peminjaman buku gagal ter-load ${error}`
             });
+
+            const htmlRowsKosong = `
+                <tr>
+                    <td colspan="9" class="text-center">Belum ada list peminjaman buku.</td>
+                </tr>
+            `
+            tbody.innerHTML = htmlRowsKosong;
         }
     }
 }

@@ -1,3 +1,5 @@
+alembic/versions/
+.skema
 .venv
 .env
 __pycache__/

@@ -1,6 +1,6 @@
-## Manajemen Buku API dengan OAuth2 + JWT
+## Manajemen Buku API dengan OAuth2 + JWT + Database
 
-Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
+Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT + Menggunakan database (PostgreSQL)
 
 ## Topik Sebelum Oauth2 ([link repo](https://github.com/dams-code/manajemen-buku-api))
 
@@ -17,26 +17,36 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
 
 ## Topik Oauth Tanpa JWT ([link repo](https://github.com/dams-code/manajemen-buku-api-oauth2))
 
- - ✅ APIRouter
- - ✅ Layered Structure
- - ✅ OAuth2 (Non-JWT) (Login User dan Handle CRUD Data Buku)
- - ✅ Registrasi User
- - ✅ Edit Profile User
- - ✅ Ganti Password User
- - ✅ RBAC - Role Based Access
- - ✅ CRUD Buku (Admin saja, manajer hanya sebagai viewer)
- - ✅ CRUD Daftar User (Manajer Saja, jika admin mengeklik - akses ditolak dan di redirect ke 403.html)
- - ✅ Perbaikan Layout dan Membuat (CRUD User - yang dapat melakukan role manajer)
+ - APIRouter
+ - Layered Structure
+ - OAuth2 (Non-JWT) (Login User dan Handle CRUD Data Buku)
+ - Registrasi User
+ - Edit Profile User
+ - Ganti Password User
+ - RBAC - Role Based Access (Admin, Manajer)
+ - CRUD Buku (Admin saja, manajer hanya sebagai viewer)
+ - CRUD Daftar User (Manajer Saja, jika admin mengeklik - akses ditolak dan di redirect ke 403.html)
+ - Perbaikan Layout dan Membuat (CRUD User - yang dapat melakukan role manajer)
 
 ## Topik Oauth + JWT ([link repo](https://github.com/dams-code/manajemen-buku-api-oauth2-jwt))
+ 
+ - Model otorisasi migrasi dari itsdangerous menjadi jwt 
+ - Perbaikan kode pada repositories
 
- - ✅ Mengganti proses create_token, dan verify_token dari itsdangerous menjadi jwt
+ <!-- - ✅ Mengganti proses create_token, dan verify_token dari itsdangerous menjadi jwt
  - ✅ Perbaikan Kode repositories `user.py` dan `role.py`
- - ✅ Menambahkan BaseModel `TokenData` pada schemas / token
+ - ✅ Menambahkan BaseModel `TokenData` pada schemas / token -->
 
-## Topik Oauth + JWT + Database (Postgres) (On-progress)
+## Topik Oauth + JWT + Database (Postgres)
 
- - ✅ Migrasi data_buku dari list menjadi table database
+ - Skema dan Models
+ - Alembic (Proses Migrasi dan Seed Data ke Database)
+ - Base, Sqlalchemy ORM, Asyncio
+ - Endpoint tambahan seperti Peminjaman (Header, detail), dan 403 (redirect url), Pengembalian, Pembatalan.
+ - Pytest, testing pada proses peminjaman.
+ - Skema ERD Database pada manajemen buku (dbdiagram io)
+
+ <!-- - ✅ Migrasi data_buku dari list menjadi table database
  - ✅ Membuat model buku
  - ✅ Perbaikan schemas/buku pada BaseModel menyesuaikan model buku
  - ✅ konfigurasi alembic untuk migrasi model buku
@@ -54,7 +64,39 @@ Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT (Non-Database)
  - ✅ Perbaikan pada endpoint Get `/member` pada query parameter dan pengambilan data.
  - ✅ Membuat endpoint peminjaman POST (header, detail).
  - ✅ Membuat endpoint pengembalian peminjaman buku PUT (header, detail), dan GET hasil.
- - ✅ Membuat endpoint pembatalan peminjaman buku PUT (header, detail), dan GET hasil.
+ - ✅ Membuat endpoint pembatalan peminjaman buku PUT (header, detail), dan GET hasil. -->
+
+### Skema Relasi Table (ERD)
+
+| **Skema Relasi Table pada Database** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/skema-table-manajemen-buku.png" width="100%" height="480px" style="object-fit: cover;"> |
+
+Berikut adalah pemetaan relasi dan struktur tabel untuk sistem perpustakaan:
+
+| Nama Tabel | Kolom Utama | Tipe Data | Constraint |
+| :--- | :--- | :--- | :--- |
+| **`roles`** | `id` | Integer | Primary Key, Auto Increment |
+| | `name` | String | Nama peran (Contoh: `admin`, `anggota`) |
+| **`users`** | `id` | Integer | Primary Key, Auto Increment |
+| | `role_id` | Integer | Foreign Key $\rightarrow$ `roles(id)` |
+| **`buku`** | `id` | Integer | Primary Key, Auto Increment |
+| **`member`** | `id` | Integer | Primary Key, Auto Increment |
+| **`hpeminjaman`**<br>*(Header Peminjaman)* | `id` | Integer | Primary Key, Auto Increment |
+| | `member_id` | Integer | Foreign Key $\rightarrow$ `member(id)` (Peminjam) |
+| **`dpeminjaman`**<br>*(Detail Peminjaman)* | `id` | Integer | Primary Key, Auto Increment |
+| | `header_id`| Integer | Foreign Key $\rightarrow$ `hpeminjaman(id)` |
+| | `buku_id` | Integer | Foreign Key $\rightarrow$ `buku(id)` |
+
+---
+
+### Relasi
+* **`users` $\leftrightarrow$ `roles`** : *Many-to-One* (Banyak pengguna aplikasi manajemen buku dapat memiliki satu *role* yang sama).
+* **`hpeminjaman` $\leftrightarrow$ `member`** : *Many-to-One* (Satu transaksi peminjaman dilakukan oleh satu member).
+* **`dpeminjaman` $\leftrightarrow$ `hpeminjaman`** : *One-to-Many* (Satu header peminjaman  bisa memiliki beberapa detail buku).
+* **`dpeminjaman` $\leftrightarrow$ `buku`** : *Many-to-One* (Setiap baris detail peminjaman buku yang dipinjam merujuk ke satu data buku spesifik).
+
+<br/>
 
 ### Perbedaan schemas/buku dari list dan sesudah migrasi ke database.
 ---
@@ -134,7 +176,7 @@ class ResultBuku(BaseModel, Generic[T]):
 </tr>
 </table>
 
-### Model Buku
+<!-- ### Model Buku
 
 ```python
 class Buku(Base):
@@ -152,7 +194,7 @@ class Buku(Base):
     modify_at: Mapped[Optional[DateTime | None]] = mapped_column(DateTime, onupdate=func.now(), nullable=True)
     modify_by: Mapped[Optional[str | None]] = mapped_column(String(50), nullable=True)
 
-```
+``` -->
 
 ### Perbedaan schemas/user dari list dan sesudah migrasi ke database.
 
@@ -249,7 +291,7 @@ class ResultUser(BaseModel, Generic[T]):
 </tr>
 </table>
 
-### Model User dan Model Role
+<!-- ### Model User dan Model Role
 
 Pada model user dan role, saya set one-to-many, 1 role bisa di isi oleh banyak user, dari sisi user hanya dapat punya 1 role.
 
@@ -292,7 +334,7 @@ class Role(Base):
 ```
 </td>
 </tr>
-</table>
+</table> -->
 
 ### Konfigurasi Alembic (env.py)  [Kode](alembic/env.py)
 
@@ -441,11 +483,18 @@ pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
 pip install pytest pytest-asyncio
 ```
 
-6. migrasi model ke database dengan alembic
+6. Migrasi model ke database dengan alembic
+   - Pertama hapus semua file revisi didalam folder `alembic/versions` (hapus file berformat .py)
 
-```bash
-alembic upgrade head
-```
+   - Kemudian buat file migrasi baru
+
+   ```bash
+   alembic revision --autogenerate -m "Membuat table baru pada manajemen buku"
+   ```
+
+   ```bash
+   alembic upgrade head
+   ```
 
 7. Jalankan seeder (karena pada role ini saya set hanya ada admin dan manajer saja.)
 
@@ -453,7 +502,13 @@ alembic upgrade head
 python -m core.seed_data
 ```
 
-8. Dokumentasi dan mount html
+8. Jalankan seed manajer (manajer tidak dapat didaftarkan via diregistrasi)
+   (untuk pertama kali dijalankan project ini)
+```bash
+python -m core.seed_manajer
+```
+
+9. Dokumentasi dan mount html
 
 ```bash
 uv run fastapi dev
@@ -471,13 +526,40 @@ http://127.0.0.1:8000/
 ```
 
 
-### Dokumentasi
----
+## Gambaran Hasil Akhir
+
+| **Halaman Utama** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/tampilan-akhir-1.png" width="100%" height="480px" style="object-fit: cover;"> |
+| Tampilan Sesi User Habis |
+
+| **Halaman Daftar Buku** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/tampilan-akhir-2-buku.png" width="100%" style="object-fit: cover;"> |
+
+| **Halaman Daftar Member** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/tampilan-akhir-3-member.png" width="100%" style="object-fit: cover;"> |
+
+| **Halaman Peminjaman** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/tampilan-akhir-4-peminjaman.png" width="100%" style="object-fit: cover;"> |
+
+| **Halaman Cetak Struk Peminjaman** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/tampilan-akhir-5-struk-peminjaman.png" width="100%" style="object-fit: cover;"> |
+
+| **Halaman Daftar Peminjaman** |
+| :---: |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/tampilan-akhir-6-list-peminjaman.png" width="100%" style="object-fit: cover;"> |
+
+## Dokumentasi
 
 | <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-1.png" width="100%" style="object-fit: cover;"> |
 | :---: |
 | <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-2-rev.png" width="100%" style="object-fit: cover;"> |
-| <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-3.png" width="100%" style="object-fit: cover;"> |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-3-rev.png" width="100%" style="object-fit: cover;"> |
+| <div style="padding:10px;"><img src="frontend/dokumentasi/dokumentasi-swagger-4.png" width="100%" style="object-fit: cover;"> |
 
 <br/>
 

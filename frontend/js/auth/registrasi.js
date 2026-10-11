@@ -1,11 +1,3 @@
-
-const username = document.getElementById("username").value.trim();
-
-const nama = document.getElementById("nama");
-const role = document.getElementById("list_role");
-const password = document.getElementById("password");
-const conf_password = document.getElementById("conf_password");
-
 function cekFormatUsername(username){
     const setRegex = /^[a-zA-Z0-9_-]+$/;
 
@@ -18,6 +10,13 @@ async function registrasiUser(e){
         e.stopPropagation();
     }
 
+    const username = document.getElementById("username").value.trim();
+
+    const nama = document.getElementById("nama");
+    const role = document.getElementById("list_role");
+    const password = document.getElementById("password");
+    const conf_password = document.getElementById("conf_password");
+
     if(!cekFormatUsername(username)) {
         Swal.fire({
             icon: "error",
@@ -25,7 +24,8 @@ async function registrasiUser(e){
             text: "Username tidak boleh mengandung spasi atau karakter spesial seperti ' atau \""
         });
 
-        console.log(cekFormatUsername(username))
+        // console.log(cekFormatUsername(username))
+        console.log("Cek text:", JSON.stringify(username), "Panjang:", username.length);
 
         return;
     }

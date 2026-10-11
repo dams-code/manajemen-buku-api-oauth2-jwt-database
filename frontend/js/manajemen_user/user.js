@@ -10,17 +10,17 @@ async function getUser(){
 
     const tbody = document.getElementById("dataUser");
 
-    listUser = await getUser.json();
+    const listUser = await getUser.json();
 
     if (listUser && listUser.length === 0) {
         
-        htmlKosong = `
+        const htmlKosong = `
             <tr>
                 <td colspan="5" class="text-center">Belum ada data user. Silakan tambah user baru.</td>
             </tr>
         `
 
-        tbody.innerHTML = htmlRows;
+        tbody.innerHTML = htmlKosong;
     }
     else {
         try{
@@ -88,6 +88,14 @@ async function getUser(){
                 title: "Gagal",
                 text: `Data User gagal ter-load ${error}`
             });
+
+            const htmlKosong = `
+                <tr>
+                    <td colspan="5" class="text-center">Belum ada data user. Silakan tambah user baru.</td>
+                </tr>
+            `
+
+            tbody.innerHTML = htmlKosong;
         }
     }
 
