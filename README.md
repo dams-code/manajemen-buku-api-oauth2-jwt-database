@@ -1,6 +1,7 @@
-## Manajemen Buku API dengan OAuth2 + JWT + Database
+## Manajemen Buku API dengan OAuth2 + JWT + Database (Mini Library)
 
-Endpoint Manajemen buku sederhana menggunakan FastAPI dengan JWT + Menggunakan database (PostgreSQL)
+### Pengembangan Proyek
+Project Manajemen Buku (Mini Library) yang awalnya hanya dirancang untuk **RESTful API backend untuk Manajemen Buku**. Namun, dengan berjalannya pengembangan pada versi paling akhir ini, sistem sedikit dikembangkan lebih luas hingga mencakup **peminjaman buku** dan **pendataan member/anggota perpustakaan**.
 
 ## Topik Sebelum Oauth2 ([link repo](https://github.com/dams-code/manajemen-buku-api))
 
