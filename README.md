@@ -449,7 +449,7 @@ pip install uv
 2. Masuk ke folder project
 
 ```bash
-cd manajemen-buku-api-oauth2-jwt-database
+cd manajemen-buku-api-oauth2-jwt-database/backend
 ```
 
 3. Buat virtual environment
@@ -470,7 +470,7 @@ source <nama_virtual_environment>/bin/activate
 Scripts\activate
 ```
 
-5. Install Library
+5. Install Library pada `backend`
 
 ```bash
 pip install "fastapi[standard]" "pwdlib[argon2]" python-dotenv
@@ -484,7 +484,21 @@ pip install alembic SQLAlchemy pyjwt "psycopg[binary]" greenlet
 pip install pytest pytest-asyncio
 ```
 
+6. Install Library pada `frontend`
+
+   - Pertama pada terminal konsole keluar dari folder backend dan menuju ke folder frontend
+   - Kemudian install sweetalert kedalam folder frontend dengan npm.
+
+   ```bash
+   npm install sweetalert2
+   ```
+
+7. Kembali ke folder `backend`
+
+   - Di terminal konsole Keluar dari folder frontend, kemudian kembali ke folder backend.
+
 6. Migrasi model ke database dengan alembic
+
    - Pertama hapus semua file revisi didalam folder `alembic/versions` (hapus file berformat .py)
 
    - Kemudian buat file migrasi baru
